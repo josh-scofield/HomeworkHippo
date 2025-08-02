@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeworkHippo - AI-Powered Science Homework Help</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #1A1A1A;
+            --bg-tertiary: #2A2A2A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B3B3B3;
+            --text-tertiary: #737373;
+            --accent-orange: #F97316;
+            --accent-orange-hover: #EA580C;
+            --border-primary: #333333;
+            --border-secondary: #404040;
+            --success: #10B981;
+            --error: #EF4444;
+            --warning: #F59E0B;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-primary);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+        }
+
+        .btn-primary {
+            background: var(--accent-orange);
+            color: white;
+            border: 1px solid var(--accent-orange);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-orange-hover);
+            border-color: var(--accent-orange-hover);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 0 120px;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero .btn {
+            font-size: 16px;
+            padding: 14px 32px;
+        }
+
+        /* Main App Section */
+        .app-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            margin: 40px auto;
+            padding: 32px;
+            max-width: 800px;
+        }
+
+        .question-input-section h2 {
+            text-align: center;
+            margin-bottom: 32px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        .input-container {
+            margin-bottom: 20px;
+        }
+
+        #questionInput {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            font-size: 15px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.2s ease;
+            font-family: inherit;
+        }
+
+        #questionInput:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+
+        #questionInput::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .file-upload-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .file-upload-btn {
+            background: var(--bg-tertiary);
+            border: 1px dashed var(--border-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            flex: 1;
+            color: var(--text-secondary);
+        }
+
+        .file-upload-btn:hover {
+            border-color: var(--accent-orange);
+            background: rgba(249, 115, 22, 0.05);
+        }
+
+        .file-upload-btn input {
+            display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--accent-orange);
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: var(--accent-orange-hover);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Response Section */
+        .response-section {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+            display: none;
+            border: 1px solid var(--border-primary);
+        }
+
+        .response-section.show {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 2px solid var(--border-primary);
+            border-top: 2px solid var(--accent-orange);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .response-content {
+            line-height: 1.7;
+        }
+
+        .response-content h3 {
+            color: var(--accent-orange);
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .response-content p {
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+        }
+
+        .response-content strong {
+            color: var(--text-primary);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+        }
+
+        .features h2 {
+            text-align: center;
+            margin-bottom: 64px;
+            font-size: 40px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            padding: 32px;
+            border-radius: 16px;
+            text-align: center;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-secondary);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-primary);
+            border-bottom: 1px solid var(--border-primary);
+            padding: 80px 0;
+        }
+
+        .pricing h2 {
+            text-align: center;
+            font-size: 40px;
+            font-weight: 600;
+            margin-bottom: 48px;
+            color: var(--text-primary);
+        }
+
+        .pricing-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .pricing-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .price {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 16px 0;
+            color: var(--text-primary);
+        }
+
+        .price span {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .price-features {
+            list-style: none;
+            margin: 32px 0;
+            text-align: left;
+        }
+
+        .price-features li {
+            padding: 8px 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .price-features li::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .trial-note {
+            margin-top: 20px;
+            color: var(--text-tertiary);
+            font-size: 14px;
+        }
+
+        /* Auth Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            padding: 32px;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 4px;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .auth-form h2 {
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        .auth-form input {
+            padding: 12px 16px;
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            font-size: 15px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            transition: border-color 0.2s ease;
+        }
+
+        .auth-form input:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+
+        .auth-form input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .auth-form button {
+            padding: 12px;
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .auth-form button:hover {
+            background: var(--accent-orange-hover);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .auth-switch a {
+            color: var(--accent-orange);
+            text-decoration: none;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        /* User Dashboard */
+        .user-dashboard {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            margin: 40px auto;
+            padding: 32px;
+            max-width: 800px;
+            display: none;
+        }
+
+        .user-dashboard.show {
+            display: block;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .dashboard-header h2 {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        .usage-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent-orange);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: opacity 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 40px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .app-section {
+                margin: 20px;
+                padding: 24px;
+            }
+
+            .container {
+                padding: 0 16px;
+            }
+
+            .hero {
+                padding: 60px 0 80px;
+            }
+
+            .features h2, .pricing h2 {
+                font-size: 32px;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Focus states for accessibility */
+        .btn:focus,
+        input:focus,
+        textarea:focus {
+            outline: 2px solid var(--accent-orange);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                🦛 HomeworkHippo
+            </a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <button class="btn btn-secondary" onclick="showModal('login')">Sign in</button>
+                <button class="btn btn-primary" onclick="showModal('signup')">Start free trial</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>AI-powered science homework help</h1>
+            <p>Get step-by-step solutions and detailed explanations for your chemistry, physics, and biology questions using advanced AI.</p>
+            <a href="#app" class="btn btn-primary">Try it now</a>
+        </section>
+
+        <!-- User Dashboard -->
+        <section class="user-dashboard" id="userDashboard">
+            <div class="dashboard-header">
+                <h2>Welcome back, <span id="userName">Student</span></h2>
+                <button class="logout-btn" onclick="logout()">Sign out</button>
+            </div>
+            <div class="usage-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="questionsAsked">0</div>
+                    <div class="stat-label">Questions this month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="daysLeft">7</div>
+                    <div class="stat-label">Trial days remaining</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Questions remaining</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main App Section -->
+        <section class="app-section" id="app">
+            <div class="question-input-section">
+                <h2>Ask your science question</h2>
+                <div class="input-container">
+                    <textarea 
+                        id="questionInput" 
+                        placeholder="Enter your chemistry, physics, or biology question here. For example: 'How do I balance the equation H₂ + O₂ → H₂O?'"
+                    ></textarea>
+                </div>
+                <div class="file-upload-container">
+                    <label class="file-upload-btn">
+                        📷 Upload image (optional)
+                        <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)">
+                    </label>
+                    <div id="imagePreview" style="display: none;">
+                        <img id="previewImg" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid var(--border-primary);">
+                    </div>
+                </div>
+                <button class="submit-btn" onclick="submitQuestion()" id="submitBtn">
+                    Get solution
+                </button>
+            </div>
+
+            <div class="response-section" id="responseSection">
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p style="color: var(--text-secondary);">Claude is analyzing your question...</p>
+                </div>
+                <div class="response-content" id="responseContent"></div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <h2>Why choose HomeworkHippo?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🧪</span>
+                    <h3>All sciences covered</h3>
+                    <p>Get help with chemistry, physics, biology, and other science subjects with detailed explanations.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📸</span>
+                    <h3>Image recognition</h3>
+                    <p>Upload photos of equations, diagrams, or problems for instant AI analysis and solutions.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎯</span>
+                    <h3>Step-by-step solutions</h3>
+                    <p>Learn the process, not just the answer. Understand how to solve similar problems independently.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h3>Instant responses</h3>
+                    <p>Powered by Claude AI for accurate, fast responses available 24/7 whenever you need help.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📚</span>
+                    <h3>Detailed explanations</h3>
+                    <p>Get comprehensive breakdowns that help you understand underlying scientific concepts.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎓</span>
+                    <h3>Learn effectively</h3>
+                    <p>Improve your problem-solving skills with guided learning approaches and study tips.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section class="pricing" id="pricing">
+            <h2>Simple, transparent pricing</h2>
+            <div class="pricing-card">
+                <h3>Student Plan</h3>
+                <div class="price">$17<span>/month</span></div>
+                <ul class="price-features">
+                    <li>Unlimited questions</li>
+                    <li>Image upload support</li>
+                    <li>Step-by-step solutions</li>
+                    <li>All science subjects</li>
+                    <li>24/7 availability</li>
+                    <li>Cancel anytime</li>
+                </ul>
+                <button class="btn btn-primary" onclick="startSubscription()" style="width: 100%; font-size: 16px;">Start free trial</button>
+                <p class="trial-note">7-day free trial • No commitment required</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="hideModal()">&times;</button>
+            <div id="loginForm">
+                <form class="auth-form" onsubmit="handleLogin(event)">
+                    <h2>Sign in to HomeworkHippo</h2>
+                    <input type="email" placeholder="Email" required id="loginEmail">
+                    <input type="password" placeholder="Password" required id="loginPassword">
+                    <button type="submit">Sign in</button>
+                </form>
+                <p class="auth-switch">
+                    Don't have an account? <a href="#" onclick="switchToSignup()">Start free trial</a>
+                </p>
+            </div>
+            <div id="signupForm" style="display: none;">
+                <form class="auth-form" onsubmit="handleSignup(event)">
+                    <h2>Start your free trial</h2>
+                    <input type="text" placeholder="Full name" required id="signupName">
+                    <input type="email" placeholder="Email" required id="signupEmail">
+                    <input type="password" placeholder="Password" required id="signupPassword">
+                    <input type="text" placeholder="School (optional)" id="signupSchool">
+                    <button type="submit">Start free trial</button>
+                </form>
+                <p class="auth-switch">
+                    Already have an account? <a href="#" onclick="switchToLogin()">Sign in</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration with your API keys
+        const CONFIG = {
+            ANTHROPIC_API_KEY: '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',
+            STRIPE_PUBLISHABLE_KEY: 'pk_live_51RrjC3L2nArkOzJtpcGX74Pbll4bQJ9bRzseceogRrA3MBe0OAnmNxYGCeJn4sxt6rgIBiknJuNkXS3CU5tHQTFf00HtLxSp3o',
+            STRIPE_PRICE_ID: 'price_1RrjOtL2nArkOzJtVCE2NeGD'
+        };
+
+        // Initialize Stripe
+        const stripe = Stripe(CONFIG.STRIPE_PUBLISHABLE_KEY);
+
+        // Global state
+        let currentUser = null;
+        let questionCount = 0;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedUser = localStorage.getItem('homeworkhippo_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showUserDashboard();
+            }
+
+            questionCount = parseInt(localStorage.getItem('question_count') || '0');
+            updateQuestionCount();
+        });
+
+        // Image upload handling
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size must be less than 10MB');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    const img = document.getElementById('previewImg');
+                    img.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Submit question function
+        async function submitQuestion() {
+            const question = document.getElementById('questionInput').value.trim();
+            const imageFile = document.getElementById('imageUpload').files[0];
+
+            if (!question && !imageFile) {
+                showAlert('Please enter a question or upload an image.', 'error');
+                return;
+            }
+
+            if (!currentUser) {
+                showAlert('Please sign in to ask questions.', 'error');
+                showModal('login');
+                return;
+            }
+
+            if (!currentUser.subscribed && !isInTrial()) {
+                showAlert('Your trial has ended. Please subscribe to continue using HomeworkHippo.', 'error');
+                startSubscription();
+                return;
+            }
+
+            const responseSection = document.getElementById('responseSection');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const responseContent = document.getElementById('responseContent');
+            const submitBtn = document.getElementById('submitBtn');
+
+            responseSection.classList.add('show');
+            loadingIndicator.style.display = 'block';
+            responseContent.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+
+            try {
+                const response = await callClaudeAPI(question, imageFile);
+                responseContent.innerHTML = formatResponse(response);
+                
+                questionCount++;
+                localStorage.setItem('question_count', questionCount.toString());
+                updateQuestionCount();
+
+            } catch (error) {
+                console.error('Error:', error);
+                responseContent.innerHTML = '<div class="alert alert-error">Sorry, there was an error processing your question. Please try again.</div>';
+            } finally {
+                loadingIndicator.style.display = 'none';
+                responseContent.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Get solution';
+            }
+        }
+
+        // Call Claude API
+        async function callClaudeAPI(question, imageFile) {
+            const messages = [{
+                role: 'user',
+                content: []
+            }];
+
+            if (question) {
+                messages[0].content.push({
+                    type: 'text',
+                    text: `Please help me solve this science homework problem step by step. Provide a detailed explanation that helps me understand the concepts and learn how to solve similar problems in the future. Here's my question: ${question}`
+                });
+            }
+
+            if (imageFile) {
+                const base64Image = await fileToBase64(imageFile);
+                messages[0].content.push({
+                    type: 'image',
+                    source: {
+                        type: 'base64',
+                        media_type: imageFile.type,
+                        data: base64Image.split(',')[1]
+                    }
+                });
+            }
+
+            const response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': CONFIG.ANTHROPIC_API_KEY,
+                    'anthropic-version': '2023-06-01'
+                },
+                body: JSON.stringify({
+                    model: 'claude-3-5-sonnet-20241022',
+                    max_tokens: 2000,
+                    messages: messages,
+                    system: `You are an expert science tutor helping students with homework. Always:
+1. Provide step-by-step solutions
+2. Explain the underlying concepts
+3. Include relevant formulas or principles
+4. Give tips for solving similar problems
+5. Use clear, educational language appropriate for students
+6. Format your response with clear headings and structure
+7. If it's not a science question, politely redirect to science topics`
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.content[0].text;
+        }
+
+        // Convert file to base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Format response for display
+        function formatResponse(text) {
+            let formatted = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+            
+            return `<p>${formatted}</p>`;
+        }
+
+        // Check if user is in trial period
+        function isInTrial() {
+            if (!currentUser || !currentUser.trialEnd) return false;
+            return new Date() < new Date(currentUser.trialEnd);
+        }
+
+        // Start subscription process
+        async function startSubscription() {
+            if (!currentUser) {
+                showModal('signup');
+                return;
+            }
+
+            try {
+                const { error } = await stripe.redirectToCheckout({
+                    lineItems: [{
+                        price: CONFIG.STRIPE_PRICE_ID,
+                        quantity: 1,
+                    }],
+                    mode: 'subscription',
+                    successUrl: window.location.origin + '/success.html',
+                    cancelUrl: window.location.origin + '/#pricing',
+                    customerEmail: currentUser.email,
+                    subscriptionData: {
+                        trial_period_days: 7,
+                    },
+                });
+
+                if (error) {
+                    console.error('Stripe error:', error);
+                    showAlert('Error starting subscription. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Subscription error:', error);
+                showAlert('Error starting subscription. Please try again.', 'error');
+            }
+        }
+
+        // Show alert messages
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            const appSection = document.getElementById('app');
+            appSection.insertBefore(alertDiv, appSection.firstChild);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Modal functions
+        function showModal(type) {
+            const modal = document.getElementById('authModal');
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            
+            if (type === 'login') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            }
+            
+            modal.classList.add('show');
+        }
+
+        function hideModal() {
+            document.getElementById('authModal').classList.remove('show');
+        }
+
+        function switchToSignup() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('signupForm').style.display = 'block';
+        }
+
+        function switchToLogin() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('signupForm').style.display = 'none';
+        }
+
+        // Auth handling
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Simulate login (replace with actual authentication)
+            currentUser = {
+                name: email.split('@')[0],
+                email: email,
+                subscribed: false,
+                trialEnd: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            };
+            
+            localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
+            hideModal();
+            showUserDashboard();
+            showAlert('Welcome back! You can now ask questions.', 'success');
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            
+            // Simulate signup
+            currentUser = {
+                name: name,
+                email: email,
+                subscribed: false,
+                trialEnd: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            };
+            
+            localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
+            hideModal();
+            showUserDashboard();
+            showAlert('Welcome to HomeworkHippo! Your 7-day free trial has started.', 'success');
+        }
+
+        function showUserDashboard() {
+            document.getElementById('userDashboard').classList.add('show');
+            document.getElementById('userName').textContent = currentUser.name;
+            updateQuestionCount();
+            updateTrialDays();
+        }
+
+        function updateQuestionCount() {
+            const element = document.getElementById('questionsAsked');
+            if (element) {
+                element.textContent = questionCount;
+            }
+        }
+
+        function updateTrialDays() {
+            if (currentUser && currentUser.trialEnd) {
+                const daysLeft = Math.max(0, Math.ceil((new Date(currentUser.trialEnd) - new Date()) / (24 * 60 * 60 * 1000)));
+                const element = document.getElementById('daysLeft');
+                if (element) {
+                    element.textContent = daysLeft;
+                }
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('homeworkhippo_user');
+            document.getElementById('userDashboard').classList.remove('show');
+            document.getElementById('responseSection').classList.remove('show');
+            document.getElementById('questionInput').value = '';
+            showAlert('You have been signed out.', 'success');
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('authModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideModal();
+            }
+        });
+
+        // Handle keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideModal();
+            }
+        });
+    </script>
+</body>
+</html>

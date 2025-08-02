@@ -1,0 +1,17 @@
+{
+  "name": "homeworkhippo",
+  "version": "1.0.0",
+  "description": "AI-powered science homework help platform",
+  "main": "index.html",
+  "scripts": {
+    "dev": "live-server --port=3000",
+    "build": "echo 'No build step required for static site'",
+    "start": "live-server --port=3000"
+  },
+  "keywords": ["ai", "education", "homework", "science", "claude"],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
