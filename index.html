@@ -940,7 +940,7 @@ async function callSecureAPI(question, imageFile) {
         requestBody.imageType = imageFile.type;
     }
 
-    const response = await fetch('/api/ask-question', {
+    const response = await fetch('/api/question', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -1164,3 +1164,4 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
