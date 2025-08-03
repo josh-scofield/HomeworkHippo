@@ -832,7 +832,6 @@
     <script>
         // Configuration with your API keys
         const CONFIG = {
-            ANTHROPIC_API_KEY: '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',
             STRIPE_PUBLISHABLE_KEY: 'pk_live_51RrjC3L2nArkOzJtpcGX74Pbll4bQJ9bRzseceogRrA3MBe0OAnmNxYGCeJn4sxt6rgIBiknJuNkXS3CU5tHQTFf00HtLxSp3o',
             STRIPE_PRICE_ID: 'price_1RrjOtL2nArkOzJtVCE2NeGD'
         };
@@ -910,7 +909,7 @@
             submitBtn.textContent = 'Processing...';
 
             try {
-                const response = await callClaudeAPI(question, imageFile);
+                const response = await callSecureAPI(question, imageFile);
                 responseContent.innerHTML = formatResponse(response);
                 
                 questionCount++;
@@ -928,61 +927,34 @@
             }
         }
 
-        // Call Claude API
-        async function callClaudeAPI(question, imageFile) {
-            const messages = [{
-                role: 'user',
-                content: []
-            }];
+// Call our secure backend API
+async function callSecureAPI(question, imageFile) {
+    const requestBody = {
+        question: question
+    };
 
-            if (question) {
-                messages[0].content.push({
-                    type: 'text',
-                    text: `Please help me solve this science homework problem step by step. Provide a detailed explanation that helps me understand the concepts and learn how to solve similar problems in the future. Here's my question: ${question}`
-                });
-            }
+    // Add image if provided
+    if (imageFile) {
+        const base64Image = await fileToBase64(imageFile);
+        requestBody.imageData = base64Image.split(',')[1];
+        requestBody.imageType = imageFile.type;
+    }
 
-            if (imageFile) {
-                const base64Image = await fileToBase64(imageFile);
-                messages[0].content.push({
-                    type: 'image',
-                    source: {
-                        type: 'base64',
-                        media_type: imageFile.type,
-                        data: base64Image.split(',')[1]
-                    }
-                });
-            }
+    const response = await fetch('/api/ask-question', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+    });
 
-            const response = await fetch('https://api.anthropic.com/v1/messages', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': CONFIG.ANTHROPIC_API_KEY,
-                    'anthropic-version': '2023-06-01'
-                },
-                body: JSON.stringify({
-                    model: 'claude-3-5-sonnet-20241022',
-                    max_tokens: 2000,
-                    messages: messages,
-                    system: `You are an expert science tutor helping students with homework. Always:
-1. Provide step-by-step solutions
-2. Explain the underlying concepts
-3. Include relevant formulas or principles
-4. Give tips for solving similar problems
-5. Use clear, educational language appropriate for students
-6. Format your response with clear headings and structure
-7. If it's not a science question, politely redirect to science topics`
-                })
-            });
+    if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+    }
 
-            if (!response.ok) {
-                throw new Error(`API error: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data.content[0].text;
-        }
+    const data = await response.json();
+    return data.response;
+}
 
         // Convert file to base64
         function fileToBase64(file) {
@@ -1190,4 +1162,5 @@
         });
     </script>
 </body>
+
 </html>
