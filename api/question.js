@@ -1,4 +1,4 @@
-// api/ask-question.js - Secure backend API for Vercel
+// api/question.js - Secure backend API for Vercel
 export default async function handler(req, res) {
   // Set CORS headers FIRST (before any other checks)
   res.setHeader('Access-Control-Allow-Origin', '*');
