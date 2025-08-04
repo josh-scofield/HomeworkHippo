@@ -896,6 +896,14 @@
                 startSubscription();
                 return;
             }
+                
+            // Check question limit for trial users
+    if (questionCount >= 3) {
+        showAlert('You\'ve used all 3 free trial questions! Subscribe now for unlimited access.', 'error');
+        startSubscription();
+        return;
+    }
+}
 
             const responseSection = document.getElementById('responseSection');
             const loadingIndicator = document.getElementById('loadingIndicator');
@@ -1164,6 +1172,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
