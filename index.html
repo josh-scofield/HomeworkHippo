@@ -702,7 +702,7 @@
                     <div class="stat-label">Trial days remaining</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="questionsRemaining">∞</div>
+                    <div class="stat-number">∞</div>
                     <div class="stat-label">Questions remaining</div>
                 </div>
             </div>
@@ -896,14 +896,6 @@
                 startSubscription();
                 return;
             }
-                
-            // Check question limit for trial users
-            if (questionCount >= 3) {
-                showAlert('You\'ve used all 3 free trial questions! Subscribe now for unlimited access.', 'error');
-                startSubscription();
-                return;
-            }
-        }
 
             const responseSection = document.getElementById('responseSection');
             const loadingIndicator = document.getElementById('loadingIndicator');
@@ -1113,7 +1105,6 @@ async function callSecureAPI(question, imageFile) {
             document.getElementById('userName').textContent = currentUser.name;
             updateQuestionCount();
             updateTrialDays();
-            updateQuestionsRemaining();
         }
 
         function updateQuestionCount() {
@@ -1121,7 +1112,6 @@ async function callSecureAPI(question, imageFile) {
             if (element) {
                 element.textContent = questionCount;
             }
-            updateQuestionsRemaining();
         }
 
         function updateTrialDays() {
@@ -1130,18 +1120,6 @@ async function callSecureAPI(question, imageFile) {
                 const element = document.getElementById('daysLeft');
                 if (element) {
                     element.textContent = daysLeft;
-                }
-            }
-        }
-        
-        function updateQuestionsRemaining() {
-            const element = document.getElementById('questionsRemaining');
-            if (element && currentUser) {
-                if (currentUser.subscribed) {
-                element.textContent = '∞';
-                } else {
-                    const remaining = Math.max(0, 3 - questionCount);
-                    element.textContent = remaining;
                 }
             }
         }
@@ -1186,9 +1164,5 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
-
-
-
-
 
 
