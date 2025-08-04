@@ -898,12 +898,12 @@
             }
                 
             // Check question limit for trial users
-    if (questionCount >= 3) {
-        showAlert('You\'ve used all 3 free trial questions! Subscribe now for unlimited access.', 'error');
-        startSubscription();
-        return;
-    }
-}
+            if (questionCount >= 3) {
+                showAlert('You\'ve used all 3 free trial questions! Subscribe now for unlimited access.', 'error');
+                startSubscription();
+                return;
+            }
+        }
 
             const responseSection = document.getElementById('responseSection');
             const loadingIndicator = document.getElementById('loadingIndicator');
@@ -1135,16 +1135,16 @@ async function callSecureAPI(question, imageFile) {
         }
         
         function updateQuestionsRemaining() {
-    const element = document.getElementById('questionsRemaining');
-    if (element && currentUser) {
-        if (currentUser.subscribed) {
-            element.textContent = '∞';
-        } else {
-            const remaining = Math.max(0, 3 - questionCount);
-            element.textContent = remaining;
+            const element = document.getElementById('questionsRemaining');
+            if (element && currentUser) {
+                if (currentUser.subscribed) {
+                element.textContent = '∞';
+                } else {
+                    const remaining = Math.max(0, 3 - questionCount);
+                    element.textContent = remaining;
+                }
+            }
         }
-    }
-}
 
         function logout() {
             currentUser = null;
@@ -1186,6 +1186,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
