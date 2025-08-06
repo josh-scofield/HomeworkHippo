@@ -995,6 +995,78 @@
         </div>
     </div>
 
+    <!-- Cancel Flow Step 1 - Are you sure? -->
+    <div class="modal" id="cancelStep1Modal">
+        <div class="modal-content" style="max-width: 500px; text-align: center;">
+            <button class="modal-close" onclick="hideCancelStep1()">&times;</button>
+            <div style="padding: 1rem;">
+                <h2 style="color: var(--error); margin-bottom: 1rem;">Wait! Before you go...</h2>
+                <p style="margin-bottom: 2rem; color: var(--text-secondary);">
+                    Are you sure you want to cancel your HomeworkHippo subscription? You'll lose access to unlimited science help and step-by-step solutions.
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button class="btn btn-secondary" onclick="hideCancelStep1()">Keep My Subscription</button>
+                    <button class="btn" onclick="showCancelStep2()" style="background: var(--error); color: white;">Continue Canceling</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cancel Flow Step 2 - Alternatives -->
+    <div class="modal" id="cancelStep2Modal">
+        <div class="modal-content" style="max-width: 500px; text-align: center;">
+            <button class="modal-close" onclick="hideCancelStep2()">&times;</button>
+            <div style="padding: 1rem;">
+                <h2 style="margin-bottom: 1rem;">We'd hate to lose you!</h2>
+                <p style="margin-bottom: 2rem; color: var(--text-secondary);">
+                    Before you cancel, would any of these options help instead?
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+                    <button class="btn btn-primary" onclick="pauseSubscription()" style="width: 100%;">
+                        Pause for 30 days (keep your account)
+                    </button>
+                    <button class="btn btn-secondary" onclick="contactSupport()" style="width: 100%;">
+                        Get help from support team
+                    </button>
+                    <button class="btn btn-secondary" onclick="hideCancelStep2(); showAccountSettings();" style="width: 100%;">
+                        Return to account settings
+                    </button>
+                </div>
+                <a href="#" onclick="showCancelStep3()" style="color: var(--text-tertiary); font-size: 14px; text-decoration: underline;">
+                    No thanks, I still want to cancel
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cancel Flow Step 3 - Final confirmation -->
+    <div class="modal" id="cancelStep3Modal">
+        <div class="modal-content" style="max-width: 500px; text-align: center;">
+            <button class="modal-close" onclick="hideCancelStep3()">&times;</button>
+            <div style="padding: 1rem;">
+                <h2 style="color: var(--error); margin-bottom: 1rem;">Final Step</h2>
+                <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                    Help us improve by telling us why you're leaving:
+                </p>
+                <select style="width: 100%; padding: 12px; margin-bottom: 2rem; border: 1px solid var(--border-primary); border-radius: 8px; background: var(--bg-tertiary); color: var(--text-primary);">
+                    <option>Too expensive</option>
+                    <option>Not using it enough</option>
+                    <option>Found a better alternative</option>
+                    <option>Technical issues</option>
+                    <option>Don't need it anymore</option>
+                    <option>Other</option>
+                </select>
+                <p style="margin-bottom: 2rem; color: var(--text-secondary); font-size: 14px;">
+                    Your subscription will end on <strong>September 5, 2024</strong>. You'll keep access until then.
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button class="btn btn-secondary" onclick="hideCancelStep3()">Keep Subscription</button>
+                    <button class="btn" onclick="confirmCancellation()" style="background: var(--error); color: white;">Cancel Subscription</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Configuration with your API keys
         const CONFIG = {
@@ -1438,6 +1510,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
