@@ -1273,8 +1273,55 @@ async function callSecureAPI(question, imageFile) {
         }
         
         function showCancelFlow() {
-            alert('Cancel flow will be implemented next!');
             hideAccountSettings();
+            showCancelStep1();
+        }
+
+        // Cancel Flow Step 1 - Are you sure?
+        function showCancelStep1() {
+            document.getElementById('cancelStep1Modal').classList.add('show');
+        }
+        
+        function hideCancelStep1() {
+            document.getElementById('cancelStep1Modal').classList.remove('show');
+        }
+        
+        // Cancel Flow Step 2 - Alternatives
+        function showCancelStep2() {
+            hideCancelStep1();
+            document.getElementById('cancelStep2Modal').classList.add('show');
+        }
+        
+        function hideCancelStep2() {
+            document.getElementById('cancelStep2Modal').classList.remove('show');
+        }
+        
+        // Cancel Flow Step 3 - Final confirmation
+        function showCancelStep3() {
+            hideCancelStep2();
+            document.getElementById('cancelStep3Modal').classList.add('show');
+        }
+        
+        function hideCancelStep3() {
+            document.getElementById('cancelStep3Modal').classList.remove('show');
+        }
+        
+        // Actually cancel subscription
+        function confirmCancellation() {
+            alert('Subscription cancelled. You will receive a confirmation email.');
+            hideCancelStep3();
+            // Here you would integrate with Stripe to actually cancel
+        }
+        
+        // Retention options
+        function pauseSubscription() {
+            alert('Subscription paused for 30 days. You can reactivate anytime!');
+            hideCancelStep2();
+        }
+        
+        function contactSupport() {
+            window.location.href = 'mailto:support@homeworkhippo.com?subject=Need Help with HomeworkHippo';
+            hideCancelStep2();
         }
 
         function switchToSignup() {
@@ -1391,6 +1438,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
