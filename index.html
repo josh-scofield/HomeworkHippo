@@ -1155,6 +1155,54 @@ async function callSecureAPI(question, imageFile) {
             document.getElementById('subscriptionModal').classList.remove('show');
         }
 
+                // Account Settings Functions
+        function showAccountSettings() {
+            document.getElementById('accountSettingsModal').classList.add('show');
+            // Update profile info when opening
+            if (currentUser) {
+                document.getElementById('profileName').value = currentUser.name;
+                document.getElementById('profileEmail').value = currentUser.email;
+                document.getElementById('settingsQuestionsUsed').textContent = questionCount;
+                document.getElementById('settingsTotalQuestions').textContent = questionCount;
+            }
+        }
+        
+        function hideAccountSettings() {
+            document.getElementById('accountSettingsModal').classList.remove('show');
+        }
+        
+        function showSettingsTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.settings-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.settings-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+        
+        function updatePaymentMethod() {
+            alert('Redirecting to payment method update...');
+            // This would integrate with Stripe customer portal
+        }
+        
+        function contactSupport() {
+            window.location.href = 'mailto:support@homeworkhippo.com?subject=HomeworkHippo Support Request';
+        }
+        
+        function showCancelFlow() {
+            alert('Cancel flow will be implemented next!');
+            hideAccountSettings();
+        }
+
         function switchToSignup() {
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('signupForm').style.display = 'block';
@@ -1269,6 +1317,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
