@@ -1034,9 +1034,6 @@ async function callSecureAPI(question, imageFile) {
                     successUrl: window.location.origin + '/success.html',
                     cancelUrl: window.location.origin + '/#pricing',
                     customerEmail: currentUser.email,
-                    subscriptionData: {
-                        trial_period_days: 7,
-                    },
                 });
 
                 if (error) {
@@ -1207,6 +1204,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
