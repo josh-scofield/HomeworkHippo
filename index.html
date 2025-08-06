@@ -1057,6 +1057,15 @@ async function callSecureAPI(question, imageFile) {
             document.getElementById('authModal').classList.remove('show');
         }
 
+        // Subscription modal functions
+        function showSubscriptionModal() {
+            document.getElementById('subscriptionModal').classList.add('show');
+        }
+
+        function hideSubscriptionModal() {
+            document.getElementById('subscriptionModal').classList.remove('show');
+        }
+
         function switchToSignup() {
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('signupForm').style.display = 'block';
@@ -1171,6 +1180,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
