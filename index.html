@@ -828,6 +828,33 @@
             </div>
         </div>
     </div>
+    
+    <!-- Subscription Modal -->
+    <div class="modal" id="subscriptionModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="hideSubscriptionModal()">&times;</button>
+            <div style="text-align: center;">
+                <h2>Upgrade to Premium</h2>
+                <div style="margin: 2rem 0;">
+                    <div class="price">$17<span>/month</span></div>
+                    <ul class="price-features" style="text-align: left; margin: 1.5rem 0;">
+                        <li>Unlimited questions</li>
+                        <li>Image upload support</li>
+                        <li>Step-by-step solutions</li>
+                        <li>All science subjects</li>
+                        <li>24/7 availability</li>
+                        <li>Cancel anytime</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="startSubscription()" style="width: 100%; font-size: 16px; padding: 16px;">
+                        Start Subscription
+                    </button>
+                    <p style="margin-top: 1rem; color: var(--text-tertiary); font-size: 14px;">
+                        7-day free trial • Cancel anytime
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Configuration with your API keys
@@ -1180,6 +1207,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
