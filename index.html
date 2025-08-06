@@ -759,10 +759,13 @@
 
         <!-- User Dashboard -->
         <section class="user-dashboard" id="userDashboard">
-            <div class="dashboard-header">
-                <h2>Welcome back, <span id="userName">Student</span></h2>
+                   <div class="dashboard-header">
+            <h2>Welcome back, <span id="userName">Student</span></h2>
+            <div>
+                <button class="btn btn-secondary" onclick="showAccountSettings()" style="margin-right: 10px; font-size: 14px;">Account Settings</button>
                 <button class="logout-btn" onclick="logout()">Sign out</button>
             </div>
+        </div>
             <div class="usage-stats">
                 <div class="stat-card">
                     <div class="stat-number" id="questionsAsked">0</div>
@@ -1388,6 +1391,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
