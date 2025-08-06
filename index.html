@@ -856,6 +856,71 @@
         </div>
     </div>
 
+        <!-- Account Settings Modal -->
+    <div class="modal" id="accountSettingsModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="modal-close" onclick="hideAccountSettings()">&times;</button>
+            <div>
+                <h2>Account Settings</h2>
+                <div class="settings-tabs">
+                    <button class="settings-tab active" onclick="showSettingsTab('profile')">Profile</button>
+                    <button class="settings-tab" onclick="showSettingsTab('billing')">Billing</button>
+                    <button class="settings-tab" onclick="showSettingsTab('usage')">Usage</button>
+                    <button class="settings-tab" onclick="showSettingsTab('support')">Support</button>
+                </div>
+            
+                <!-- Profile Tab -->
+                <div class="settings-content" id="profileTab">
+                    <h3>Profile Information</h3>
+                    <div class="settings-form">
+                        <label>Name:</label>
+                        <input type="text" id="profileName" readonly>
+                        <label>Email:</label>
+                        <input type="email" id="profileEmail" readonly>
+                        <label>Member since:</label>
+                        <input type="text" value="August 2024" readonly>
+                    </div>
+                </div>
+            
+                <!-- Billing Tab -->
+                <div class="settings-content" id="billingTab" style="display: none;">
+                    <h3>Billing & Subscription</h3>
+                    <div class="billing-info">
+                        <p><strong>Current Plan:</strong> Student Plan ($17/month)</p>
+                        <p><strong>Status:</strong> <span style="color: var(--success);">Active</span></p>
+                        <p><strong>Next billing:</strong> September 5, 2024</p>
+                        <button class="btn btn-secondary" onclick="updatePaymentMethod()">Update Payment Method</button>
+                    </div>
+                    <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-primary);">
+                        <a href="#" onclick="showCancelFlow()" style="color: var(--text-tertiary); font-size: 14px;">Cancel subscription</a>
+                    </div>
+                </div>
+            
+                <!-- Usage Tab -->
+                <div class="settings-content" id="usageTab" style="display: none;">
+                    <h3>Usage Statistics</h3>
+                    <div class="usage-stats">
+                        <p><strong>Questions this month:</strong> <span id="settingsQuestionsUsed">0</span></p>
+                        <p><strong>Total questions:</strong> <span id="settingsTotalQuestions">0</span></p>
+                        <p><strong>Favorite subjects:</strong> Chemistry, Physics</p>
+                        <p><strong>Average response time:</strong> 3.2 seconds</p>
+                       </div>
+                </div>
+            
+                <!-- Support Tab -->
+                <div class="settings-content" id="supportTab" style="display: none;">
+                    <h3>Help & Support</h3>
+                    <div class="support-options">
+                        <p><strong>Need help?</strong></p>
+                        <button class="btn btn-secondary" onclick="contactSupport()">Contact Support</button>
+                        <p style="margin-top: 1rem;"><strong>Email:</strong> support@homeworkhippo.com</p>
+                        <p><strong>Response time:</strong> Within 24 hours</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Configuration with your API keys
         const CONFIG = {
@@ -1204,6 +1269,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
