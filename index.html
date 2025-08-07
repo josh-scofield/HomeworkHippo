@@ -1525,9 +1525,9 @@ async function callSecureAPI(question, imageFile) {
             }
         }
 
-        function updateTrialDays() {
+           function updateTrialDays() {
     const element = document.getElementById('daysLeft');
-    const daysCard = element?.closest('.stat-card');
+    const daysCard = element ? element.closest('.stat-card') : null;
     
     if (currentUser && currentUser.subscribed) {
         // Hide trial days for subscribed users
@@ -1584,6 +1584,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
