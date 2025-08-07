@@ -15,7 +15,7 @@ export default async function handler(req, res) {
       
       if (customerEmail) {
         // Update user subscription status
-        const updateResponse = await fetch(`${process.env.VERCEL_URL || 'https://homework-hippo.vercel.app'}/api/users`, {
+        const updateResponse = await fetch(`${process.env.VERCEL_URL || 'https://homework-hippo.vercel.app'}/api/users.js`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -36,7 +36,7 @@ export default async function handler(req, res) {
       
       if (customerEmail) {
         // Remove subscription access
-        await fetch(`${process.env.VERCEL_URL || 'https://homework-hippo.vercel.app'}/api/users`, {
+        await fetch(`${process.env.VERCEL_URL || 'https://homework-hippo.vercel.app'}/api/users.js`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
