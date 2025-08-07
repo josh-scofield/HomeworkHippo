@@ -9,27 +9,47 @@ export default async function handler(req, res) {
         event.type === 'customer.subscription.updated') {
       
       const subscription = event.data.object;
-      const customerEmail = subscription.customer; // This is actually the customer ID
+      const customerEmail = subscription.metadata?.userEmail || subscription.customer_email;
       
-      console.log('Subscription event:', {
-        customer: subscription.customer,
-        status: subscription.status,
-        current_period_end: subscription.current_period_end
-      });
+      console.log('Subscription event for:', customerEmail);
       
-      // TODO: Update user subscription status in your app
-      // For now, just log the important data
+      if (customerEmail) {
+        // Update user subscription status
+        const updateResponse = await fetch(`${process.env.VERCEL_URL || 'https://homework-hippo.vercel.app'}/api/users`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'updateSubscription',
+            email: customerEmail,
+            subscribed: true,
+            stripeCustomerId: subscription.customer
+          })
+        });
+        
+        console.log('User updated:', customerEmail);
+      }
       
     } else if (event.type === 'customer.subscription.deleted') {
       
       const subscription = event.data.object;
-      console.log('Subscription cancelled:', subscription.customer);
+      const customerEmail = subscription.metadata?.userEmail || subscription.customer_email;
       
-      // TODO: Remove subscription access
-      
+      if (customerEmail) {
+        // Remove subscription access
+        await fetch(`${process.env.VERCEL_URL || 'https://homework-hippo.vercel.app'}/api/users`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'updateSubscription',
+            email: customerEmail,
+            subscribed: false
+          })
+        });
+        
+        console.log('Subscription cancelled for:', customerEmail);
+      }
     }
     
-    // Always return success to Stripe
     res.status(200).json({ received: true });
     
   } catch (error) {
