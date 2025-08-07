@@ -1132,24 +1132,36 @@
                 return;
             }
 
-            if (!currentUser) {
-                showAlert('Please sign in to ask questions.', 'error');
-                showModal('login');
-                return;
+        if (!currentUser) {
+            showAlert('Please sign in to ask questions.', 'error');
+            showModal('login');
+            return;
+        }
+        
+        // Refresh user data to check latest subscription status
+        try {
+            const userResponse = await fetch(`/api/users?email=${currentUser.email}`);
+            const userData = await userResponse.json();
+            if (userData.success) {
+                currentUser = userData.user;
+                localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
             }
-
-            if (!currentUser.subscribed && !isInTrial()) {
-                showAlert('Your trial has ended. Please subscribe to continue using HomeworkHippo.', 'error');
-                startSubscription();
-                return;
-            }
-            
-            // Check question limit for trial users
-            if (!currentUser.subscribed && questionCount >= 3) {
-                showAlert('You\'ve used all 3 free trial questions! Subscribe now for unlimited access.', 'error');
-                startSubscription();
-                return;
-            }
+        } catch (error) {
+            console.error('Error refreshing user data:', error);
+        }
+        
+        if (!currentUser.subscribed && !isInTrial()) {
+            showAlert('Your trial has ended. Please subscribe to continue using HomeworkHippo.', 'error');
+            startSubscription();
+            return;
+        }
+        
+        // Check question limit for trial users
+        if (!currentUser.subscribed && questionCount >= 3) {
+            showAlert('You\'ve used all 3 free trial questions! Subscribe now for unlimited access.', 'error');
+            startSubscription();
+            return;
+        }
 
             const responseSection = document.getElementById('responseSection');
             const loadingIndicator = document.getElementById('loadingIndicator');
@@ -1570,6 +1582,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
