@@ -1420,32 +1420,78 @@ async function callSecureAPI(question, imageFile) {
             document.getElementById('signupForm').style.display = 'none';
         }
 
-        // Auth handling
-        function handleLogin(event) {
+                // Auth handling
+        async function handleLogin(event) {
             event.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
-            // Simulate login (replace with actual authentication)
-            currentUser = {
-                name: email.split('@')[0],
-                email: email,
-                subscribed: false,
-                trialEnd: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-            };
-            
-            localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
-            hideModal();
-            showUserDashboard();
-            showAlert('Welcome back! You can now ask questions.', 'success');
+            try {
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'login',
+                        email,
+                        password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentUser = data.user;
+                    localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
+                    hideModal();
+                    showUserDashboard();
+                    showAlert('Welcome back! You can now ask questions.', 'success');
+                } else {
+                    showAlert('Invalid email or password.', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('Login failed. Please try again.', 'error');
+            }
         }
 
-        function handleSignup(event) {
+                async function handleSignup(event) {
             event.preventDefault();
             const name = document.getElementById('signupName').value;
             const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
             
+            try {
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'signup',
+                        name,
+                        email,
+                        password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentUser = data.user;
+                    localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
+                    hideModal();
+                    showUserDashboard();
+                    showAlert('Welcome to HomeworkHippo! Your 7-day free trial has started.', 'success');
+                } else {
+                    showAlert('Signup failed. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                showAlert('Signup failed. Please try again.', 'error');
+            }
+        }
             // Simulate signup
             currentUser = {
                 name: name,
@@ -1524,6 +1570,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
