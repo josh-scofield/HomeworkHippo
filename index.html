@@ -775,20 +775,26 @@
                 <button class="logout-btn" onclick="logout()">Sign out</button>
             </div>
         </div>
-            <div class="usage-stats">
-                <div class="stat-card">
-                    <div class="stat-number" id="questionsAsked">0</div>
-                    <div class="stat-label">Questions this month</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="daysLeft">7</div>
-                    <div class="stat-label">Trial days remaining</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">∞</div>
-                    <div class="stat-label">Questions remaining</div>
-                </div>
-            </div>
+            
+        function updateTrialDays() {
+            const element = document.getElementById('daysLeft');
+            const daysCard = element?.closest('.stat-card');
+            
+            if (currentUser && currentUser.subscribed) {
+                // Hide trial days for subscribed users
+                if (daysCard) daysCard.style.display = 'none';
+            } else if (currentUser && currentUser.trialEnd) {
+                // Show trial days for trial users
+                if (daysCard) daysCard.style.display = 'block';
+                const now = new Date();
+                const trialEndDate = new Date(currentUser.trialEnd);
+                const daysLeft = Math.max(0, Math.ceil((trialEndDate - now) / (24 * 60 * 60 * 1000)));
+                if (element) {
+                    element.textContent = daysLeft;
+                }
+            }
+        }
+        
         </section>
 
         <!-- Main App Section -->
@@ -1582,6 +1588,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
