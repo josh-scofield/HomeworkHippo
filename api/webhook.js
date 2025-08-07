@@ -1,4 +1,4 @@
-// api/stripe-webhook.js - Handles Stripe payment notifications
+// api/webhook.js - Handles Stripe payment notifications
 export default async function handler(req, res) {
   // Only allow POST requests from Stripe
   if (req.method !== 'POST') {
