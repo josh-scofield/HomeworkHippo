@@ -5,6 +5,25 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
+  // Handle Stripe webhooks
+  if (req.body && req.body.type) {
+    console.log('Stripe webhook received:', req.body.type);
+    
+    // Handle different webhook events
+    if (req.body.type === 'customer.subscription.created' || 
+        req.body.type === 'customer.subscription.updated') {
+      console.log('Subscription event:', req.body.data.object);
+      // We'll add user update logic here later
+    }
+    
+    return res.status(200).json({ received: true });
+  }
+
+  // Handle preflight OPTIONS request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   // Handle preflight OPTIONS request BEFORE checking for POST
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
