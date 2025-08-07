@@ -1526,14 +1526,23 @@ async function callSecureAPI(question, imageFile) {
         }
 
         function updateTrialDays() {
-            if (currentUser && currentUser.trialEnd) {
-                const daysLeft = Math.max(0, Math.ceil((new Date(currentUser.trialEnd) - new Date()) / (24 * 60 * 60 * 1000)));
-                const element = document.getElementById('daysLeft');
-                if (element) {
-                    element.textContent = daysLeft;
-                }
-            }
+    const element = document.getElementById('daysLeft');
+    const daysCard = element?.closest('.stat-card');
+    
+    if (currentUser && currentUser.subscribed) {
+        // Hide trial days for subscribed users
+        if (daysCard) daysCard.style.display = 'none';
+    } else if (currentUser && currentUser.trialEnd) {
+        // Show trial days for trial users
+        if (daysCard) daysCard.style.display = 'block';
+        const now = new Date();
+        const trialEndDate = new Date(currentUser.trialEnd);
+        const daysLeft = Math.max(0, Math.ceil((trialEndDate - now) / (24 * 60 * 60 * 1000)));
+        if (element) {
+            element.textContent = daysLeft;
         }
+    }
+}
 
         function logout() {
             currentUser = null;
@@ -1575,6 +1584,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
