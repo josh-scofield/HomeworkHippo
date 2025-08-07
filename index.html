@@ -1510,20 +1510,7 @@ async function callSecureAPI(question, imageFile) {
                 showAlert('Signup failed. Please try again.', 'error');
             }
         }
-            // Simulate signup
-            currentUser = {
-                name: name,
-                email: email,
-                subscribed: false,
-                trialEnd: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-            };
-            
-            localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
-            hideModal();
-            showUserDashboard();
-            showAlert('Welcome to HomeworkHippo! Your 7-day free trial has started.', 'success');
-        }
-
+         
         function showUserDashboard() {
             document.getElementById('userDashboard').classList.add('show');
             document.getElementById('userName').textContent = currentUser.name;
@@ -1588,6 +1575,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
