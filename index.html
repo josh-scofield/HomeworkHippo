@@ -1146,7 +1146,7 @@
         
         // Refresh user data to check latest subscription status
         try {
-            const userResponse = await fetch(`/api/users?email=${currentUser.email}`);
+            const userResponse = await fetch(`/api/users.js?email=${currentUser.email}`);
             const userData = await userResponse.json();
             if (userData.success) {
                 currentUser = userData.user;
@@ -1445,7 +1445,7 @@ async function callSecureAPI(question, imageFile) {
             const password = document.getElementById('loginPassword').value;
             
             try {
-                const response = await fetch('/api/users', {
+                const response = await fetch('/api/users.js', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1481,7 +1481,7 @@ async function callSecureAPI(question, imageFile) {
             const password = document.getElementById('signupPassword').value;
             
             try {
-                const response = await fetch('/api/users', {
+                const response = await fetch('/api/users.js', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1584,6 +1584,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
