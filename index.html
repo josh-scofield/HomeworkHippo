@@ -1360,17 +1360,17 @@ async function callSecureAPI(question, imageFile) {
         }
 
          function updateTrialDays() {
-            const element = document.getElementById('daysLeft');
-            const daysCard = element?.closest('.stat-card');
-            
-            if (currentUser && currentUser.subscribed) {
-                // Hide trial days for subscribed users
-                if (daysCard) daysCard.style.display = 'none';
-            } else if (currentUser && currentUser.trialEnd) {
-                // Show trial days for trial users
-                if (daysCard) daysCard.style.display = 'block';
-                const now = new Date();
-                const trialEndDate = new Date(currentUser.trialEnd);
+    const element = document.getElementById('daysLeft');
+    const daysCard = element?.closest('.stat-card');
+    
+    if (currentUser && currentUser.subscribed) {
+        // Hide trial days for subscribed users
+        if (daysCard) daysCard.style.display = 'none';
+    } else if (currentUser && currentUser.trial_end) {  // Changed here
+        // Show trial days for trial users
+        if (daysCard) daysCard.style.display = 'block';
+        const now = new Date();
+        const trialEndDate = new Date(currentUser.trial_end);
                 const daysLeft = Math.max(0, Math.ceil((trialEndDate - now) / (24 * 60 * 60 * 1000)));
                 if (element) {
                     element.textContent = daysLeft;
@@ -1591,6 +1591,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
