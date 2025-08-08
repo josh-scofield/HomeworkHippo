@@ -775,25 +775,6 @@
                 <button class="logout-btn" onclick="logout()">Sign out</button>
             </div>
         </div>
-            
-        function updateTrialDays() {
-            const element = document.getElementById('daysLeft');
-            const daysCard = element?.closest('.stat-card');
-            
-            if (currentUser && currentUser.subscribed) {
-                // Hide trial days for subscribed users
-                if (daysCard) daysCard.style.display = 'none';
-            } else if (currentUser && currentUser.trialEnd) {
-                // Show trial days for trial users
-                if (daysCard) daysCard.style.display = 'block';
-                const now = new Date();
-                const trialEndDate = new Date(currentUser.trialEnd);
-                const daysLeft = Math.max(0, Math.ceil((trialEndDate - now) / (24 * 60 * 60 * 1000)));
-                if (element) {
-                    element.textContent = daysLeft;
-                }
-            }
-        }
         
         </section>
 
@@ -1371,6 +1352,25 @@ async function callSecureAPI(question, imageFile) {
             alert('Redirecting to payment method update...');
             // This would integrate with Stripe customer portal
         }
+
+         function updateTrialDays() {
+            const element = document.getElementById('daysLeft');
+            const daysCard = element?.closest('.stat-card');
+            
+            if (currentUser && currentUser.subscribed) {
+                // Hide trial days for subscribed users
+                if (daysCard) daysCard.style.display = 'none';
+            } else if (currentUser && currentUser.trialEnd) {
+                // Show trial days for trial users
+                if (daysCard) daysCard.style.display = 'block';
+                const now = new Date();
+                const trialEndDate = new Date(currentUser.trialEnd);
+                const daysLeft = Math.max(0, Math.ceil((trialEndDate - now) / (24 * 60 * 60 * 1000)));
+                if (element) {
+                    element.textContent = daysLeft;
+                }
+            }
+        }
         
         function contactSupport() {
             window.location.href = 'mailto:support@homeworkhippo.com?subject=HomeworkHippo Support Request';
@@ -1584,6 +1584,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
