@@ -7,8 +7,20 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
+  // DEBUG: Check environment variables
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_ANON_KEY;
+  
+  console.log('Supabase URL exists:', !!supabaseUrl);
+  console.log('Supabase Key exists:', !!supabaseKey);
+  
+  if (!supabaseUrl || !supabaseKey) {
+    return res.status(500).json({ 
+      error: 'Environment variables missing',
+      hasUrl: !!supabaseUrl,
+      hasKey: !!supabaseKey
+    });
+  }
 
   if (!supabaseUrl || !supabaseKey) {
     return res.status(500).json({ error: 'Database configuration missing' });
