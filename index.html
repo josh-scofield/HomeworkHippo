@@ -775,8 +775,21 @@
                 <button class="logout-btn" onclick="logout()">Sign out</button>
             </div>
         </div>
-        
-        </section>
+            <div class="usage-stats">
+        <div class="stat-card">
+            <div class="stat-number" id="questionsAsked">0</div>
+            <div class="stat-label">Questions this month</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="daysLeft">7</div>
+            <div class="stat-label">Trial days remaining</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="questionsRemaining">∞</div>
+            <div class="stat-label">Questions remaining</div>
+        </div>
+    </div>
+</section>
 
         <!-- Main App Section -->
         <section class="app-section" id="app">
@@ -1584,6 +1597,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
