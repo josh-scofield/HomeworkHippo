@@ -1267,10 +1267,6 @@ async function callSecureAPI(question, imageFile) {
             successUrl: window.location.origin + '/success.html',
             cancelUrl: window.location.origin + '/#pricing',
             customerEmail: currentUser.email,
-            metadata: {
-                userEmail: currentUser.email,
-                userName: currentUser.name
-            }
         });
 
                 if (error) {
@@ -1597,6 +1593,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
