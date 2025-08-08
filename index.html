@@ -781,11 +781,7 @@
             <div class="stat-label">Questions this month</div>
         </div>
         <div class="stat-card">
-            <div class="stat-number" id="daysLeft">7</div>
-            <div class="stat-label">Trial days remaining</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number" id="questionsRemaining">∞</div>
+            <div class="stat-number" id="questionsRemaining">3</div>
             <div class="stat-label">Questions remaining</div>
         </div>
     </div>
@@ -1527,31 +1523,29 @@ async function callSecureAPI(question, imageFile) {
             updateTrialDays();
         }
 
-        function updateQuestionCount() {
-            const element = document.getElementById('questionsAsked');
-            if (element) {
-                element.textContent = questionCount;
-            }
-        }
-
-           function updateTrialDays() {
-    const element = document.getElementById('daysLeft');
-    const daysCard = element ? element.closest('.stat-card') : null;
+       function updateQuestionCount() {
+    const askedElement = document.getElementById('questionsAsked');
+    const remainingElement = document.getElementById('questionsRemaining');
     
-    if (currentUser && currentUser.subscribed) {
-        // Hide trial days for subscribed users
-        if (daysCard) daysCard.style.display = 'none';
-    } else if (currentUser && currentUser.trialEnd) {
-        // Show trial days for trial users
-        if (daysCard) daysCard.style.display = 'block';
-        const now = new Date();
-        const trialEndDate = new Date(currentUser.trialEnd);
-        const daysLeft = Math.max(0, Math.ceil((trialEndDate - now) / (24 * 60 * 60 * 1000)));
-        if (element) {
-            element.textContent = daysLeft;
+    if (askedElement) {
+        askedElement.textContent = questionCount;
+    }
+    
+    if (remainingElement) {
+        if (currentUser && currentUser.subscribed) {
+            // For subscribed users
+            remainingElement.textContent = '∞';
+            remainingElement.nextElementSibling.textContent = 'Questions remaining';
+        } else {
+            // For trial users
+            const remaining = Math.max(0, 3 - questionCount);
+            remainingElement.textContent = remaining;
+            remainingElement.nextElementSibling.textContent = 'Questions remaining';
         }
     }
 }
+
+  
 
         function logout() {
             currentUser = null;
@@ -1593,6 +1587,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
