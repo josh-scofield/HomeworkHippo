@@ -41,11 +41,18 @@ export default async function handler(req, res) {
         if (response.ok) {
           const userData = await response.json();
           return res.status(200).json({ success: true, user: userData[0] });
+          
         } else {
-          const error = await response.json();
-          return res.status(400).json({ error: 'Signup failed', details: error });
-        }
-      }
+      const error = await response.json();
+      console.error('Supabase error:', error);
+      // Return detailed error to frontend for debugging
+      return res.status(400).json({ 
+        error: 'Database error', 
+        details: error,
+        status: response.status,
+        statusText: response.statusText
+      });
+    }
       
       if (action === 'login') {
         // Find user by email and password
