@@ -1,37 +1,37 @@
 export default async function handler(req, res) {
+  // Allow all origins for now
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  // DEBUG: Check environment variables
+  // Get environment variables
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_ANON_KEY;
   
-  console.log('Supabase URL exists:', !!supabaseUrl);
-  console.log('Supabase Key exists:', !!supabaseKey);
-  
+  // Check if we have the credentials
   if (!supabaseUrl || !supabaseKey) {
+    console.error('Missing Supabase credentials');
     return res.status(500).json({ 
-      error: 'Environment variables missing',
-      hasUrl: !!supabaseUrl,
-      hasKey: !!supabaseKey
+      error: 'Database not configured. Please add SUPABASE_URL and SUPABASE_ANON_KEY to Vercel environment variables.'
     });
-  }
-
-  if (!supabaseUrl || !supabaseKey) {
-    return res.status(500).json({ error: 'Database configuration missing' });
   }
 
   try {
     if (req.method === 'POST') {
-      const { email, name, password, action, subscribed, stripeCustomerId } = req.body;
+      const { email, name, password, action } = req.body;
       
       if (action === 'signup') {
-        // Create new user
+        console.log('Attempting signup for:', email);
+        
+        // Create the trial end date (7 days from now)
+        const trialEnd = new Date();
+        trialEnd.setDate(trialEnd.getDate() + 7);
+        
+        // Create new user in Supabase
         const response = await fetch(`${supabaseUrl}/rest/v1/users`, {
           method: 'POST',
           headers: {
@@ -41,88 +41,65 @@ export default async function handler(req, res) {
             'Prefer': 'return=representation'
           },
           body: JSON.stringify({
-            email,
-            name,
-            password,
+            email: email,
+            name: name,
+            password: password,
             subscribed: false,
-            trial_end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+            trial_end: trialEnd.toISOString(),
             questions_used: 0
           })
         });
 
+        const responseText = await response.text();
+        console.log('Supabase response:', response.status, responseText);
+
         if (response.ok) {
-          const userData = await response.json();
-          return res.status(200).json({ success: true, user: userData[0] });
-          
+          const userData = JSON.parse(responseText);
+          return res.status(200).json({ 
+            success: true, 
+            user: userData[0] || userData 
+          });
         } else {
-      const error = await response.json();
-      console.error('Supabase error:', error);
-      // Return detailed error to frontend for debugging
-      return res.status(400).json({ 
-        error: 'Database error', 
-        details: error,
-        status: response.status,
-        statusText: response.statusText
-      });
-    }
+          // Check if user already exists
+          if (responseText.includes('duplicate') || responseText.includes('unique')) {
+            return res.status(400).json({ 
+              error: 'This email is already registered. Please sign in instead.' 
+            });
+          }
+          return res.status(400).json({ 
+            error: 'Signup failed', 
+            details: responseText 
+          });
+        }
+      }
       
       if (action === 'login') {
+        console.log('Attempting login for:', email);
+        
         // Find user by email and password
-        const response = await fetch(`${supabaseUrl}/rest/v1/users?email=eq.${email}&password=eq.${password}`, {
-          headers: {
-            'apikey': supabaseKey,
-            'Authorization': `Bearer ${supabaseKey}`
+        const response = await fetch(
+          `${supabaseUrl}/rest/v1/users?email=eq.${email}&password=eq.${password}`,
+          {
+            headers: {
+              'apikey': supabaseKey,
+              'Authorization': `Bearer ${supabaseKey}`
+            }
           }
-        });
+        );
 
         const users = await response.json();
-        if (users.length > 0) {
-          return res.status(200).json({ success: true, user: users[0] });
+        console.log('Found users:', users.length);
+        
+        if (users && users.length > 0) {
+          return res.status(200).json({ 
+            success: true, 
+            user: users[0] 
+          });
         } else {
-          return res.status(401).json({ error: 'Invalid credentials' });
+          return res.status(401).json({ 
+            error: 'Invalid email or password' 
+          });
         }
-      }
-      
-      if (action === 'updateSubscription') {
-        // Update user subscription status
-        const response = await fetch(`${supabaseUrl}/rest/v1/users?email=eq.${email}`, {
-          method: 'PATCH',
-          headers: {
-            'apikey': supabaseKey,
-            'Authorization': `Bearer ${supabaseKey}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=representation'
-          },
-          body: JSON.stringify({
-            subscribed,
-            stripe_customer_id: stripeCustomerId
-          })
-        });
-
-        if (response.ok) {
-          const userData = await response.json();
-          return res.status(200).json({ success: true, user: userData[0] });
-        } else {
-          return res.status(400).json({ error: 'Update failed' });
-        }
-      }
-    }
-
-    if (req.method === 'GET') {
-      // Get user by email
-      const email = req.query.email;
-      const response = await fetch(`${supabaseUrl}/rest/v1/users?email=eq.${email}`, {
-        headers: {
-          'apikey': supabaseKey,
-          'Authorization': `Bearer ${supabaseKey}`
-        }
-      });
-
-      const users = await response.json();
-      if (users.length > 0) {
-        return res.status(200).json({ success: true, user: users[0] });
-      } else {
-        return res.status(404).json({ error: 'User not found' });
       }
     }
 
@@ -130,6 +107,9 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Database error:', error);
-    return res.status(500).json({ error: 'Server error', details: error.message });
+    return res.status(500).json({ 
+      error: 'Server error', 
+      details: error.message 
+    });
   }
 }
