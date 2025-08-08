@@ -1,6 +1,10 @@
 export default async function handler(req, res) {
   console.log('Webhook received:', req.body.type);
   
+  // Get Supabase credentials
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_ANON_KEY;
+  
   try {
     const event = req.body;
     
@@ -9,39 +13,54 @@ export default async function handler(req, res) {
         event.type === 'customer.subscription.updated') {
       
       const subscription = event.data.object;
-      const customerEmail = subscription.metadata?.userEmail || subscription.customer_email;
+      // Try to get email from different possible locations
+      const customerEmail = subscription.customer_email || 
+                           subscription.metadata?.userEmail ||
+                           event.data.object.customer_email;
       
-      console.log('Subscription event for:', customerEmail);
+      console.log('Subscription activated for:', customerEmail);
       
-      if (customerEmail) {
-        // Update user subscription status
-        const updateResponse = await fetch(`${process.env.VERCEL_URL || 'https://homework-hippo.vercel.app'}/api/users.js`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+      if (customerEmail && supabaseUrl && supabaseKey) {
+        // Update user directly in Supabase
+        const response = await fetch(`${supabaseUrl}/rest/v1/users?email=eq.${customerEmail}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
           body: JSON.stringify({
-            action: 'updateSubscription',
-            email: customerEmail,
             subscribed: true,
-            stripeCustomerId: subscription.customer
+            stripe_customer_id: subscription.customer
           })
         });
         
-        console.log('User updated:', customerEmail);
+        if (response.ok) {
+          console.log('User subscription activated:', customerEmail);
+        } else {
+          console.error('Failed to update user:', await response.text());
+        }
       }
       
     } else if (event.type === 'customer.subscription.deleted') {
       
       const subscription = event.data.object;
-      const customerEmail = subscription.metadata?.userEmail || subscription.customer_email;
+      const customerEmail = subscription.customer_email || 
+                           subscription.metadata?.userEmail ||
+                           event.data.object.customer_email;
       
-      if (customerEmail) {
+      if (customerEmail && supabaseUrl && supabaseKey) {
         // Remove subscription access
-        await fetch(`${process.env.VERCEL_URL || 'https://homework-hippo.vercel.app'}/api/users.js`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const response = await fetch(`${supabaseUrl}/rest/v1/users?email=eq.${customerEmail}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
           body: JSON.stringify({
-            action: 'updateSubscription',
-            email: customerEmail,
             subscribed: false
           })
         });
