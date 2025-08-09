@@ -55,6 +55,14 @@ export default async function handler(req, res) {
         
         if (response.ok) {
           console.log('User subscription activated:', customerEmail);
+          fetch(`${process.env.VERCEL_URL || 'https://homeworkhippo.com'}/api/send-email`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    to: customerEmail,
+    type: 'welcome'
+  })
+}).catch(err => console.log('Email send failed:', err));
         } else {
           console.error('Failed to update user:', await response.text());
         }
@@ -99,6 +107,14 @@ export default async function handler(req, res) {
         });
         
         console.log('Subscription cancelled for:', customerEmail);
+        fetch(`${process.env.VERCEL_URL || 'https://homeworkhippo.com'}/api/send-email`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    to: customerEmail,
+    type: 'cancelled'
+  })
+}).catch(err => console.log('Email send failed:', err));
       }
     }
     
