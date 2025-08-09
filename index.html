@@ -1537,7 +1537,7 @@ async function callSecureAPI(question, imageFile) {
             currentUser.subscribed = false;
             localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
             
-            alert('Your subscription has been cancelled. You will retain access until the end of your billing period.');
+            alert('Your subscription has been cancelled successfully.');
             hideCancelStep3();
             location.reload();
         } else {
@@ -1620,6 +1620,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
