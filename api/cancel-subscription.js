@@ -68,19 +68,17 @@ export default async function handler(req, res) {
     }
 
     // Cancel the first active subscription
-    const subscriptionId = subscriptions.data[0].id;
-    
-    const cancelResponse = await fetch(
-      `https://api.stripe.com/v1/subscriptions/${subscriptionId}`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${stripeSecretKey}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'cancel_at_period_end=false'
-      }
-    );
+   const subscriptionId = subscriptions.data[0].id;
+
+const cancelResponse = await fetch(
+  `https://api.stripe.com/v1/subscriptions/${subscriptionId}`,
+  {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${stripeSecretKey}`,
+    }
+  }
+);
 
     if (cancelResponse.ok) {
       console.log('Subscription cancelled for:', email);
