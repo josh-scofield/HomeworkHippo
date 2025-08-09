@@ -63,7 +63,7 @@ export default async function handler(req, res) {
   try {
     // Using Web3Forms free email API (100 emails/month free)
     // Get your access key at: https://web3forms.com/
-    const WEB3FORMS_KEY = process.env.WEB3FORMS_KEY || 'YOUR_ACCESS_KEY_HERE';
+    const WEB3FORMS_KEY = process.env.WEB3FORMS_KEY || '784568f1-8f21-4833-b104-8434217d7c1a';
     
     const response = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
