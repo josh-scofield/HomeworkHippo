@@ -16,11 +16,51 @@ export default async function handler(req, res) {
   if (!supabaseUrl || !supabaseKey) {
     console.error('Missing Supabase credentials');
     return res.status(500).json({ 
-      error: 'Database not configured. Please add SUPABASE_URL and SUPABASE_ANON_KEY to Vercel environment variables.'
+      error: 'Database not configured'
     });
   }
 
   try {
+    // Handle GET requests
+    if (req.method === 'GET') {
+      const email = req.query.email;
+      
+      if (!email) {
+        return res.status(400).json({ error: 'Email parameter required' });
+      }
+      
+      console.log('Fetching user:', email);
+      
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/users?email=eq.${email}`,
+        {
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`
+          }
+        }
+      );
+
+      if (response.ok) {
+        const users = await response.json();
+        if (users && users.length > 0) {
+          return res.status(200).json({ 
+            success: true, 
+            user: users[0] 
+          });
+        } else {
+          return res.status(404).json({ 
+            error: 'User not found' 
+          });
+        }
+      } else {
+        return res.status(500).json({ 
+          error: 'Database error' 
+        });
+      }
+    }
+
+    // Handle POST requests
     if (req.method === 'POST') {
       const { email, name, password, action } = req.body;
       
@@ -51,7 +91,7 @@ export default async function handler(req, res) {
         });
 
         const responseText = await response.text();
-        console.log('Supabase response:', response.status, responseText);
+        console.log('Supabase response:', response.status);
 
         if (response.ok) {
           const userData = JSON.parse(responseText);
@@ -101,9 +141,44 @@ export default async function handler(req, res) {
           });
         }
       }
+      
+      if (action === 'updateSubscription') {
+        console.log('Updating subscription for:', email);
+        
+        const updates = { subscribed: req.body.subscribed };
+        if (req.body.stripeCustomerId) {
+          updates.stripe_customer_id = req.body.stripeCustomerId;
+        }
+        
+        const response = await fetch(
+          `${supabaseUrl}/rest/v1/users?email=eq.${email}`,
+          {
+            method: 'PATCH',
+            headers: {
+              'apikey': supabaseKey,
+              'Authorization': `Bearer ${supabaseKey}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(updates)
+          }
+        );
+
+        if (response.ok) {
+          const userData = await response.json();
+          return res.status(200).json({ 
+            success: true, 
+            user: userData[0] 
+          });
+        } else {
+          return res.status(400).json({ 
+            error: 'Update failed' 
+          });
+        }
+      }
     }
 
-    return res.status(400).json({ error: 'Invalid request' });
+    return res.status(400).json({ error: 'Invalid request method' });
 
   } catch (error) {
     console.error('Database error:', error);
