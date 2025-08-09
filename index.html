@@ -1417,11 +1417,9 @@ async function callSecureAPI(question, imageFile) {
         }
         
         // Actually cancel subscription
-        function confirmCancellation() {
-            alert('Subscription cancelled. You will receive a confirmation email.');
-            hideCancelStep3();
-            // Here you would integrate with Stripe to actually cancel
-        }
+       function confirmCancellation() {
+    cancelSubscriptionWithStripe(); // This will actually cancel it
+}
         
         // Retention options
         function pauseSubscription() {
@@ -1520,6 +1518,37 @@ async function callSecureAPI(question, imageFile) {
             }
         }
          
+        async function cancelSubscriptionWithStripe() {
+    try {
+        const response = await fetch('/api/cancel-subscription', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: currentUser.email
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Update local user data
+            currentUser.subscribed = false;
+            localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
+            
+            alert('Your subscription has been cancelled. You will retain access until the end of your billing period.');
+            hideCancelStep3();
+            location.reload();
+        } else {
+            alert('Failed to cancel subscription. Please contact support.');
+        }
+    } catch (error) {
+        console.error('Cancellation error:', error);
+        alert('Error cancelling subscription. Please contact support.');
+    }
+}
+        
         function showUserDashboard() {
             document.getElementById('userDashboard').classList.add('show');
             document.getElementById('userName').textContent = currentUser.name;
@@ -1591,6 +1620,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
