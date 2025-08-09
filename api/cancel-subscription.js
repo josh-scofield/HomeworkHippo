@@ -78,7 +78,7 @@ export default async function handler(req, res) {
           'Authorization': `Bearer ${stripeSecretKey}`,
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: 'cancel_at_period_end=true'
+        body: 'cancel_at_period_end=false'
       }
     );
 
