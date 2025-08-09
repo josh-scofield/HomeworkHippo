@@ -1520,7 +1520,7 @@ async function callSecureAPI(question, imageFile) {
          
         async function cancelSubscriptionWithStripe() {
     try {
-        const response = await fetch('/api/cancel-subscription', {
+        const response = await fetch('/api/cancel-subscription.js', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1620,6 +1620,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
