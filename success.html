@@ -11,65 +11,83 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         :root {
-            --bg-primary: #0A0A0A;
-            --text-primary: #FFFFFF;
-            --text-secondary: #B3B3B3;
-            --accent-orange: #F97316;
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F9FAFB;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --accent-blue: #3B82F6;
+            --accent-blue-hover: #2563EB;
             --success: #10B981;
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
+            background: linear-gradient(to bottom, var(--bg-primary), var(--bg-secondary));
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-
         .success-container {
             text-align: center;
             max-width: 500px;
-            padding: 2rem;
+            padding: 3rem;
+            background: var(--bg-primary);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid #E5E7EB;
         }
-
         .checkmark {
             font-size: 4rem;
             color: var(--success);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            animation: scaleIn 0.5s ease;
         }
-
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
         h1 {
             font-size: 2rem;
             margin-bottom: 1rem;
             color: var(--text-primary);
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
-
         p {
             color: var(--text-secondary);
             margin-bottom: 2rem;
             line-height: 1.6;
-        }
-
-        .btn {
-            background: var(--accent-orange);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
             font-size: 16px;
-            font-weight: 500;
+        }
+        .btn {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-hover));
+            color: white;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
-            transition: opacity 0.2s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            letter-spacing: -0.01em;
         }
-
         .btn:hover {
-            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
     </style>
 </head>
@@ -78,7 +96,7 @@
         <div class="checkmark">✅</div>
         <h1>Payment Successful!</h1>
         <p>Welcome to HomeworkHippo! Your subscription is now active and you can start asking unlimited science questions.</p>
-        <a href="/" class="btn">Start asking questions</a>
+        <a href="/" class="btn">Start asking questions →</a>
     </div>
 </body>
 </html>
