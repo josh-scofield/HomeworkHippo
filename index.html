@@ -1318,11 +1318,37 @@ async function callSecureAPI(question, imageFile) {
         return new Date() < new Date(currentUser.trial_end);
     }
         // Start subscription process
-        async function startSubscription() {
-            if (!currentUser) {
-                showModal('signup');
-                return;
-            }
+       async function startSubscription() {
+    // If coming from subscription modal and no user, show special signup flow
+    if (!currentUser) {
+        hideSubscriptionModal(); // Close the subscription modal first
+        showModal('signup');
+        // Store intention to subscribe after signup
+        localStorage.setItem('pending_subscription', 'true');
+        return;
+    }
+
+    try {
+        const { error } = await stripe.redirectToCheckout({
+            lineItems: [{
+                price: CONFIG.STRIPE_PRICE_ID,
+                quantity: 1,
+            }],
+            mode: 'subscription',
+            successUrl: window.location.origin + '/success.html',
+            cancelUrl: window.location.origin + '/#pricing',
+            customerEmail: currentUser.email,
+        });
+
+        if (error) {
+            console.error('Stripe error:', error);
+            showAlert('Error starting subscription. Please try again.', 'error');
+        }
+    } catch (error) {
+        console.error('Subscription error:', error);
+        showAlert('Error starting subscription. Please try again.', 'error');
+    }
+}
 
             try {
                         
@@ -1363,20 +1389,45 @@ async function callSecureAPI(question, imageFile) {
 
         // Modal functions
         function showModal(type) {
-            const modal = document.getElementById('authModal');
-            const loginForm = document.getElementById('loginForm');
-            const signupForm = document.getElementById('signupForm');
-            
-            if (type === 'login') {
-                loginForm.style.display = 'block';
-                signupForm.style.display = 'none';
-            } else {
-                loginForm.style.display = 'none';
-                signupForm.style.display = 'block';
+    const modal = document.getElementById('authModal');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    
+    if (type === 'login') {
+        loginForm.style.display = 'block';
+        signupForm.style.display = 'none';
+    } else {
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+        
+        // Find the subtitle paragraph in the signup form
+        const subtitle = signupForm.querySelector('p[style*="color: var(--text-secondary)"]');
+        
+        // Check if user is coming from subscription intent
+        if (localStorage.getItem('pending_subscription') === 'true') {
+            // Change subtitle to indicate direct subscription
+            if (subtitle) {
+                subtitle.innerHTML = 'Create your account to complete subscription';
             }
-            
-            modal.classList.add('show');
+            // Also update the button text
+            const submitButton = signupForm.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.textContent = 'Create account & subscribe';
+            }
+        } else {
+            // Reset to normal trial text if not from subscription
+            if (subtitle) {
+                subtitle.innerHTML = 'Sign up to start your 7-day free trial';
+            }
+            const submitButton = signupForm.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.textContent = 'Create account & start trial';
+            }
         }
+    }
+    
+    modal.classList.add('show');
+}
 
         function hideModal() {
             document.getElementById('authModal').classList.remove('show');
@@ -1576,7 +1627,15 @@ async function callSecureAPI(question, imageFile) {
                     localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
                     hideModal();
                     showUserDashboard();
-                    showAlert('Welcome to HomeworkHippo! Your 7-day free trial has started.', 'success');
+                    if (localStorage.getItem('pending_subscription') === 'true') {
+                localStorage.removeItem('pending_subscription');
+                showAlert('Account created! Redirecting to payment...', 'success');
+                setTimeout(() => {
+                    startSubscription(); // Now they're logged in, so this will work
+                }, 1500);
+            } else {
+                showAlert('Welcome to HomeworkHippo! Your 7-day free trial has started.', 'success');
+        }
                        
                 } else {
           console.error('Signup failed:', data);
@@ -1691,6 +1750,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
