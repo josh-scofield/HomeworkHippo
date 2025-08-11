@@ -1318,16 +1318,16 @@ async function callSecureAPI(question, imageFile) {
         return new Date() < new Date(currentUser.trial_end);
     }
         // Start subscription process
-       async function startSubscription() {
-    // If coming from subscription modal and no user, show special signup flow
+     async function startSubscription() {
+    // If no user logged in, close subscription modal and show signup
     if (!currentUser) {
         hideSubscriptionModal(); // Close the subscription modal first
-        showModal('signup');
-        // Store intention to subscribe after signup
-        localStorage.setItem('pending_subscription', 'true');
+        localStorage.setItem('pending_subscription', 'true'); // Remember they want to subscribe
+        showModal('signup'); // Show signup modal
         return;
     }
 
+    // If user is logged in, proceed with Stripe checkout
     try {
         const { error } = await stripe.redirectToCheckout({
             lineItems: [{
@@ -1349,7 +1349,6 @@ async function callSecureAPI(question, imageFile) {
         showAlert('Error starting subscription. Please try again.', 'error');
     }
 }
-
             try {
                         
                 const { error } = await stripe.redirectToCheckout({
@@ -1750,6 +1749,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
