@@ -958,21 +958,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <button type="submit">Sign in</button>
                 </form>
                 <p class="auth-switch">
-                    Don't have an account? <a href="#" onclick="switchToSignup()">Start free trial</a>
-                </p>
+            Don't have an account? <a href="#" onclick="switchToSignup()">Create account</a>
+        </p>
             </div>
             <div id="signupForm" style="display: none;">
                 <form class="auth-form" onsubmit="handleSignup(event)">
-                    <h2>Start your free trial</h2>
-                    <input type="text" placeholder="Full name" required id="signupName">
-                    <input type="email" placeholder="Email" required id="signupEmail">
-                    <input type="password" placeholder="Password" required id="signupPassword">
-                    <input type="text" placeholder="School (optional)" id="signupSchool">
-                    <button type="submit">Start free trial</button>
-                </form>
-                <p class="auth-switch">
-                    Already have an account? <a href="#" onclick="switchToLogin()">Sign in</a>
+                <h2>Create your account</h2>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">
+                Sign up to start your 7-day free trial
                 </p>
+                <input type="text" placeholder="Full name" required id="signupName">
+                <input type="email" placeholder="Email" required id="signupEmail">
+                <input type="password" placeholder="Password" required id="signupPassword">
+                <button type="submit">Create account & start trial</button>
+            </form>
+            <p class="auth-switch">
+                Already have an account? <a href="#" onclick="switchToLogin()">Sign in</a>
+            </p>
             </div>
         </div>
     </div>
@@ -1689,6 +1691,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
