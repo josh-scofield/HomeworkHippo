@@ -1349,28 +1349,7 @@ async function callSecureAPI(question, imageFile) {
         showAlert('Error starting subscription. Please try again.', 'error');
     }
 }
-            try {
-                        
-                const { error } = await stripe.redirectToCheckout({
-            lineItems: [{
-                price: CONFIG.STRIPE_PRICE_ID,
-                quantity: 1,
-            }],
-            mode: 'subscription',
-            successUrl: window.location.origin + '/success.html',
-            cancelUrl: window.location.origin + '/#pricing',
-            customerEmail: currentUser.email,
-        });
 
-                if (error) {
-                    console.error('Stripe error:', error);
-                    showAlert('Error starting subscription. Please try again.', 'error');
-                }
-            } catch (error) {
-                console.error('Subscription error:', error);
-                showAlert('Error starting subscription. Please try again.', 'error');
-            }
-        }
 
         // Show alert messages
         function showAlert(message, type) {
@@ -1749,6 +1728,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
