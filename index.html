@@ -697,31 +697,88 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
         /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 40px;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .app-section {
-                margin: 20px;
-                padding: 24px;
-            }
+    .nav-links {
+        gap: 8px;
+    }
+    
+    .nav-links a {
+        display: none; /* Hide Features and Pricing links on mobile */
+    }
+    
+    .nav-links .btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .hero h1 {
+        font-size: 36px;
+        padding: 0 20px;
+    }
+    
+    .hero p {
+        font-size: 16px;
+        padding: 0 20px;
+    }
+    
+    .app-section {
+        margin: -20px 16px 40px;
+        padding: 24px 16px;
+    }
 
-            .container {
-                padding: 0 16px;
-            }
+    .container {
+        padding: 0 16px;
+    }
 
-            .hero {
-                padding: 60px 0 80px;
-            }
+    .hero {
+        padding: 60px 0 80px;
+    }
 
-            .features h2, .pricing h2 {
-                font-size: 32px;
-            }
-        }
+    .features h2, .pricing h2 {
+        font-size: 28px;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .feature-card {
+        padding: 24px;
+    }
+    
+    .pricing-card {
+        padding: 32px 20px;
+        margin: 0 16px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        padding: 24px;
+        margin: 16px;
+    }
+    
+    .modal-close {
+        top: 12px;
+        right: 12px;
+        width: 28px;
+        height: 28px;
+    }
+}
+        @media (max-width: 768px) {
+    /* Cancel flow buttons */
+    #cancelStep1Modal .modal-content div[style*="display: flex"],
+    #cancelStep2Modal .modal-content div[style*="display: flex"],
+    #cancelStep3Modal .modal-content div[style*="display: flex"] {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+    
+    #cancelStep1Modal .btn,
+    #cancelStep2Modal .btn,
+    #cancelStep3Modal .btn {
+        width: 100% !important;
+    }
+}
 
         /* Smooth scrolling */
         html {
@@ -1088,7 +1145,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </p>
                 <div style="display: flex; gap: 1rem; justify-content: center;">
                     <button class="btn btn-secondary" onclick="hideCancelStep1()">Keep My Subscription</button>
-                    <button class="btn" onclick="showCancelStep2()" style="background: var(--error); color: white;">Continue Canceling</button>
+                    <button class="btn" onclick="showCancelStep2()" style="background: var(--error); color: white; border: 1px solid var(--error); padding: 10px 20px;">Continue Canceling</button>
                 </div>
             </div>
         </div>
@@ -1734,6 +1791,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
