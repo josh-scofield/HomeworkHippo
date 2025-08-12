@@ -895,14 +895,56 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <section class="hero">
             <h1>AI-powered science homework help</h1>
             <p>Get step-by-step solutions and detailed explanations for your chemistry, physics, and biology questions using advanced AI.</p>
-            <div class="trust-badge-container" style="text-align: center; margin: 20px 0 30px 0; animation: fadeIn 0.6s ease-out;">
-    <div class="trust-badge" style="display: inline-flex; align-items: center; gap: 10px; background: rgba(59, 130, 246, 0.08); padding: 10px 20px; border-radius: 50px; border: 1px solid rgba(59, 130, 246, 0.2);">
-        <span class="trust-stars" style="color: #fbbf24; font-size: 16px; letter-spacing: 2px;">★★★★★</span>
-        <span class="trust-text" style="font-size: 14px; color: #6B7280; font-weight: 500;">
-            Trusted by over <strong style="color: #3B82F6; font-weight: 600;">5k students</strong> from <strong style="color: #3B82F6; font-weight: 600;">100+ universities</strong>
+            <div style="text-align: center; margin: 25px 0 35px 0; animation: slideUp 0.8s ease-out;">
+    <div style="display: inline-flex; align-items: center; gap: 12px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.05)); padding: 12px 24px; border-radius: 100px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); animation: pulse 4s ease-in-out infinite;">
+        <span style="color: #fbbf24; font-size: 18px; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.5)); animation: sparkle 2s ease-in-out infinite;">★★★★★</span>
+        <span style="font-size: 14px; color: #64748b; font-weight: 500; letter-spacing: 0.3px;">
+            Trusted by <strong style="background: linear-gradient(135deg, #3B82F6, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700; font-size: 15px;">5,000+ students</strong> from <strong style="background: linear-gradient(135deg, #3B82F6, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700; font-size: 15px;">100+ universities</strong>
         </span>
     </div>
 </div>
+
+<style>
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 6px 30px rgba(59, 130, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(1.1);
+    }
+}
+
+@media (max-width: 480px) {
+    /* Mobile adjustments */
+    div[style*="gap: 12px"] {
+        padding: 10px 18px !important;
+    }
+}
+</style>
             <a href="#" class="btn btn-primary" onclick="showModal('signup'); return false;">Try it now</a>
         </section>
 
@@ -1799,6 +1841,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
