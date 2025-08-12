@@ -904,7 +904,61 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 </div>
 
-<style>
+        .strength-bar {
+    height: 4px;
+    flex: 1;
+    background: var(--border-primary);
+    border-radius: 2px;
+    transition: background-color 0.3s ease;
+}
+
+.strength-bar.weak {
+    background: #ef4444;
+}
+
+.strength-bar.fair {
+    background: #f59e0b;
+}
+
+.strength-bar.good {
+    background: #10b981;
+}
+
+.strength-bar.strong {
+    background: #059669;
+}
+
+.requirement-met {
+    color: var(--accent-orange) !important;
+}
+
+.requirement-met::before {
+    content: "✓ " !important;
+}
+
+.password-match {
+    color: var(--accent-orange);
+}
+
+.password-no-match {
+    color: #ef4444;
+}
+
+.auth-form input:invalid {
+    border-color: var(--border-primary);
+}
+
+.auth-form input:valid {
+    border-color: var(--accent-orange);
+}
+
+.auth-form button:disabled {
+    background: var(--text-tertiary);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+            
+            <style>
 @keyframes slideUp {
     from {
         opacity: 0;
@@ -1075,20 +1129,277 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </p>
             </div>
             <div id="signupForm" style="display: none;">
-                <form class="auth-form" onsubmit="handleSignup(event)">
-                <h2>Create your account</h2>
-                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">
-                Sign up to start your 7-day free trial
-                </p>
-                <input type="text" placeholder="Full name" required id="signupName">
-                <input type="email" placeholder="Email" required id="signupEmail">
-                <input type="password" placeholder="Password" required id="signupPassword">
-                <button type="submit">Create account & start trial</button>
-            </form>
-            <p class="auth-switch">
-                Already have an account? <a href="#" onclick="switchToLogin()">Sign in</a>
-            </p>
+    <form class="auth-form" onsubmit="handleSignup(event)">
+        <h2>Create your account</h2>
+        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">
+            Sign up to start your 7-day free trial
+        </p>
+        
+        <input type="email" placeholder="Email address" required id="signupEmail">
+        
+        <div style="position: relative;">
+            <input type="password" placeholder="Create password" required id="signupPassword" 
+                   oninput="checkPasswordStrength()" minlength="6">
+            <div id="passwordStrength" style="margin-top: 8px; display: none;">
+                <div style="display: flex; gap: 4px; margin-bottom: 6px;">
+                    <div class="strength-bar" id="bar1"></div>
+                    <div class="strength-bar" id="bar2"></div>
+                    <div class="strength-bar" id="bar3"></div>
+                    <div class="strength-bar" id="bar4"></div>
+                </div>
+                <div id="strengthText" style="font-size: 12px; color: var(--text-tertiary);"></div>
+                <div id="passwordRequirements" style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px;">
+                    <div id="req-length">• At least 6 characters</div>
+                    <div id="req-upper">• One uppercase letter</div>
+                    <div id="req-special">• One special character (!@#$%^&*)</div>
+                </div>
             </div>
+        </div>
+        
+        <div style="position: relative;">
+            <input type="password" placeholder="Confirm password" required id="confirmPassword" 
+                   oninput="checkPasswordMatch()">
+            <div id="passwordMatch" style="margin-top: 6px; font-size: 12px; display: none;"></div>
+        </div>
+        
+        <button type="submit" id="signupSubmitBtn" disabled>Create account & start trial</button>
+        
+        <div style="text-align: center; margin-top: 16px; padding: 12px; background: rgba(59, 130, 246, 0.05); border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.1);">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px;">
+                <svg width="16" height="16" fill="var(--accent-orange)" viewBox="0 0 24 24">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                    <path fill="white" d="M10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                </svg>
+                <span style="font-size: 12px; font-weight: 600; color: var(--accent-orange);">Secure & Private</span>
+            </div>
+            <div style="font-size: 11px; color: var(--text-secondary);">
+                Your email is never shared. Cancel anytime.
+            </div>
+        </div>
+    </form>
+    <p class="auth-switch">
+        Already have an account? <a href="#" onclick="switchToLogin()">Sign in</a>
+    </p>
+</div>
+
+<style>
+.strength-bar {
+    height: 4px;
+    flex: 1;
+    background: var(--border-primary);
+    border-radius: 2px;
+    transition: background-color 0.3s ease;
+}
+
+.strength-bar.weak {
+    background: #ef4444;
+}
+
+.strength-bar.fair {
+    background: #f59e0b;
+}
+
+.strength-bar.good {
+    background: #10b981;
+}
+
+.strength-bar.strong {
+    background: #059669;
+}
+
+.requirement-met {
+    color: var(--accent-orange) !important;
+}
+
+.requirement-met::before {
+    content: "✓ " !important;
+}
+
+.password-match {
+    color: var(--accent-orange);
+}
+
+.password-no-match {
+    color: #ef4444;
+}
+
+.auth-form input:invalid {
+    border-color: var(--border-primary);
+}
+
+.auth-form input:valid {
+    border-color: var(--accent-orange);
+}
+
+.auth-form button:disabled {
+    background: var(--text-tertiary);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+</style>
+
+<script>
+function checkPasswordStrength() {
+    const password = document.getElementById('signupPassword').value;
+    const strengthDiv = document.getElementById('passwordStrength');
+    const strengthText = document.getElementById('strengthText');
+    const bars = document.querySelectorAll('.strength-bar');
+    
+    // Show strength indicator when user starts typing
+    if (password.length > 0) {
+        strengthDiv.style.display = 'block';
+    } else {
+        strengthDiv.style.display = 'none';
+        updateSubmitButton();
+        return;
+    }
+    
+    // Reset bars
+    bars.forEach(bar => {
+        bar.className = 'strength-bar';
+    });
+    
+    let score = 0;
+    let feedback = '';
+    
+    // Check requirements
+    const hasLength = password.length >= 6;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    
+    // Update requirement indicators
+    document.getElementById('req-length').className = hasLength ? 'requirement-met' : '';
+    document.getElementById('req-upper').className = hasUpper ? 'requirement-met' : '';
+    document.getElementById('req-special').className = hasSpecial ? 'requirement-met' : '';
+    
+    // Calculate score
+    if (hasLength) score++;
+    if (hasUpper) score++;
+    if (hasSpecial) score++;
+    if (password.length >= 8) score++;
+    
+    // Update strength bars and text
+    if (score === 1) {
+        bars[0].classList.add('weak');
+        feedback = 'Weak';
+        strengthText.style.color = '#ef4444';
+    } else if (score === 2) {
+        bars[0].classList.add('fair');
+        bars[1].classList.add('fair');
+        feedback = 'Fair';
+        strengthText.style.color = '#f59e0b';
+    } else if (score === 3) {
+        bars[0].classList.add('good');
+        bars[1].classList.add('good');
+        bars[2].classList.add('good');
+        feedback = 'Good';
+        strengthText.style.color = '#10b981';
+    } else if (score === 4) {
+        bars.forEach(bar => bar.classList.add('strong'));
+        feedback = 'Strong';
+        strengthText.style.color = '#059669';
+    }
+    
+    strengthText.textContent = feedback;
+    updateSubmitButton();
+}
+
+function checkPasswordMatch() {
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const matchDiv = document.getElementById('passwordMatch');
+    
+    if (confirmPassword.length > 0) {
+        matchDiv.style.display = 'block';
+        if (password === confirmPassword) {
+            matchDiv.textContent = '✓ Passwords match';
+            matchDiv.className = 'password-match';
+        } else {
+            matchDiv.textContent = '✗ Passwords do not match';
+            matchDiv.className = 'password-no-match';
+        }
+    } else {
+        matchDiv.style.display = 'none';
+    }
+    
+    updateSubmitButton();
+}
+
+function updateSubmitButton() {
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const submitBtn = document.getElementById('signupSubmitBtn');
+    
+    // Check all requirements
+    const hasLength = password.length >= 6;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const passwordsMatch = password === confirmPassword && confirmPassword.length > 0;
+    const hasEmail = document.getElementById('signupEmail').value.length > 0;
+    
+    const allValid = hasLength && hasUpper && hasSpecial && passwordsMatch && hasEmail;
+    
+    submitBtn.disabled = !allValid;
+}
+
+// Update the handleSignup function to remove name requirement
+async function handleSignup(event) {
+    event.preventDefault();
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    // Additional validation
+    if (password !== confirmPassword) {
+        showAlert('Passwords do not match.', 'error');
+        return;
+    }
+    
+    if (password.length < 6 || !/[A-Z]/.test(password) || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        showAlert('Password does not meet security requirements.', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/users.js', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'signup',
+                name: email.split('@')[0], // Use email prefix as name
+                email,
+                password
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            currentUser = data.user;
+            localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
+            hideModal();
+            showUserDashboard();
+            if (localStorage.getItem('pending_subscription') === 'true') {
+                localStorage.removeItem('pending_subscription');
+                showAlert('Account created! Redirecting to payment...', 'success');
+                setTimeout(() => {
+                    startSubscription();
+                }, 1500);
+            } else {
+                showAlert('Welcome to HomeworkHippo! Your 7-day free trial has started.', 'success');
+            }
+        } else {
+            console.error('Signup failed:', data);
+            showAlert(`Signup failed: ${JSON.stringify(data.details || data.error)}`, 'error');
+        }
+    } catch (error) {
+        console.error('Signup error:', error);
+        showAlert('Signup failed. Please try again.', 'error');
+    }
+}
+</script>
         </div>
     </div>
     
@@ -1841,6 +2152,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
