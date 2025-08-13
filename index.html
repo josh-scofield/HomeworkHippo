@@ -904,60 +904,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 </div>
 <style>
-        .strength-bar {
-    height: 4px;
-    flex: 1;
-    background: var(--border-primary);
-    border-radius: 2px;
-    transition: background-color 0.3s ease;
-}
-
-.strength-bar.weak {
-    background: #ef4444;
-}
-
-.strength-bar.fair {
-    background: #f59e0b;
-}
-
-.strength-bar.good {
-    background: #10b981;
-}
-
-.strength-bar.strong {
-    background: #059669;
-}
-
-.requirement-met {
-    color: var(--accent-orange) !important;
-}
-
-.requirement-met::before {
-    content: "✓ " !important;
-}
-
-.password-match {
-    color: var(--accent-orange);
-}
-
-.password-no-match {
-    color: #ef4444;
-}
-
-.auth-form input:invalid {
-    border-color: var(--border-primary);
-}
-
-.auth-form input:valid {
-    border-color: var(--accent-orange);
-}
-
-.auth-form button:disabled {
-    background: var(--text-tertiary);
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-            
         
 @keyframes slideUp {
     from {
@@ -2152,6 +2098,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
