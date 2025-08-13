@@ -1139,7 +1139,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <style>
-/* Progress Ring Upload Button - Centered */
+/* Progress Ring Upload Button - Properly Centered */
 .file-upload-container {
     display: flex;
     justify-content: center;
@@ -1169,8 +1169,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 .progress-ring {
     position: absolute;
-    top: -4px;
-    left: -4px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 96px;
     height: 96px;
 }
@@ -1182,7 +1183,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     stroke-dasharray: 251.2;
     stroke-dashoffset: 251.2;
     animation: progress 3s ease-in-out infinite;
-    transform-origin: center;
+    transform-origin: 50% 50%;
     transform: rotate(-90deg);
 }
 
@@ -1194,6 +1195,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 .camera-icon-center {
     color: var(--accent-orange);
     z-index: 2;
+    position: relative;
 }
 
 .file-upload-btn-progress:hover {
@@ -2274,6 +2276,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
