@@ -973,12 +973,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <section class="app-section" id="app">
             <div class="question-input-section">
                 <h2>Ask your science question</h2>
-                <div class="input-container">
-                    <textarea 
-                        id="questionInput" 
-                        placeholder="Enter your chemistry, physics, or biology question here. For example: 'How do I balance the equation H₂ + O₂ → H₂O?'"
-                    ></textarea>
-                </div>
+               <div class="input-container">
+            <div class="typing-placeholder" id="typingPlaceholder"></div>
+            <textarea 
+                id="questionInput" 
+                placeholder=""
+                onfocus="hideTypingPlaceholder()"
+                onblur="showTypingPlaceholder()"
+                oninput="handleInputChange()"
+            ></textarea>
+        </div>
                 <div class="file-upload-container">
                     <label class="file-upload-btn">
                         📷 Upload image (optional)
@@ -1129,6 +1133,55 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <style>
+    /* Typing animation and shimmer effect */
+#questionInput::placeholder {
+    color: transparent;
+}
+
+.typing-placeholder {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    color: var(--text-tertiary);
+    font-size: 15px;
+    font-family: inherit;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(90deg, 
+        var(--text-tertiary) 0%, 
+        var(--accent-orange) 50%, 
+        var(--text-tertiary) 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+.typing-placeholder::after {
+    content: '|';
+    color: var(--accent-orange);
+    animation: blink 1s infinite;
+    -webkit-text-fill-color: var(--accent-orange);
+}
+
+@keyframes shimmer {
+    0%, 100% {
+        background-position: -200% 0;
+    }
+    50% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.input-container {
+    position: relative;
+}
 /* Enhanced question input section - external glow only */
 .app-section {
     animation: pulseGlow 4s ease-in-out infinite;
@@ -1198,6 +1251,80 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </style>
 
 <script>
+// Typing animation variables
+let typingInterval;
+let currentQuestionIndex = 0;
+let currentCharIndex = 0;
+let isDeleting = false;
+let isTypingActive = true;
+
+const questions = [
+    "How do I balance H₂ + O₂ → H₂O?",
+    "What is photosynthesis?", 
+    "Explain Newton's first law",
+    "How do enzymes work?",
+    "What causes chemical bonds?"
+];
+
+function startTypingAnimation() {
+    if (!isTypingActive) return;
+    
+    const placeholder = document.getElementById('typingPlaceholder');
+    const currentQuestion = questions[currentQuestionIndex];
+    
+    if (!isDeleting && currentCharIndex <= currentQuestion.length) {
+        // Typing
+        placeholder.textContent = currentQuestion.substring(0, currentCharIndex);
+        currentCharIndex++;
+        setTimeout(startTypingAnimation, 100);
+    } else if (isDeleting && currentCharIndex >= 0) {
+        // Deleting
+        placeholder.textContent = currentQuestion.substring(0, currentCharIndex);
+        currentCharIndex--;
+        setTimeout(startTypingAnimation, 50);
+    } else if (!isDeleting && currentCharIndex > currentQuestion.length) {
+        // Pause before deleting
+        setTimeout(() => {
+            isDeleting = true;
+            startTypingAnimation();
+        }, 2000);
+    } else if (isDeleting && currentCharIndex < 0) {
+        // Move to next question
+        isDeleting = false;
+        currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+        setTimeout(startTypingAnimation, 500);
+    }
+}
+
+function hideTypingPlaceholder() {
+    isTypingActive = false;
+    document.getElementById('typingPlaceholder').style.display = 'none';
+}
+
+function showTypingPlaceholder() {
+    const input = document.getElementById('questionInput');
+    if (input.value.trim() === '') {
+        isTypingActive = true;
+        document.getElementById('typingPlaceholder').style.display = 'block';
+        startTypingAnimation();
+    }
+}
+
+function handleInputChange() {
+    const input = document.getElementById('questionInput');
+    if (input.value.trim() !== '') {
+        hideTypingPlaceholder();
+    }
+}
+
+// Start animation when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // ... your existing DOMContentLoaded code ...
+    
+    // Start typing animation
+    setTimeout(startTypingAnimation, 1000);
+});
+    
 function checkPasswordStrength() {
     const password = document.getElementById('signupPassword').value;
     const strengthDiv = document.getElementById('passwordStrength');
@@ -2074,6 +2201,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
