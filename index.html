@@ -983,10 +983,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 oninput="handleInputChange()"
             ></textarea>
         </div>
-     <div class="file-upload-container">
+ <div class="file-upload-container">
     <label class="file-upload-btn-progress">
-        <svg class="progress-ring">
-            <circle class="progress-circle" cx="44" cy="44" r="40"></circle>
+        <svg class="progress-ring" viewBox="0 0 100 100">
+            <circle class="progress-circle" cx="50" cy="50" r="45"></circle>
         </svg>
         <svg class="camera-icon-center" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
@@ -1169,26 +1169,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 .progress-ring {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 96px;
-    height: 96px;
+    top: 0;
+    left: 0;
+    width: 88px;
+    height: 88px;
 }
 
 .progress-circle {
     fill: none;
     stroke: var(--accent-orange);
     stroke-width: 3;
-    stroke-dasharray: 251.2;
-    stroke-dashoffset: 251.2;
+    stroke-dasharray: 282.74;
+    stroke-dashoffset: 282.74;
     animation: progress 3s ease-in-out infinite;
-    transform-origin: 50% 50%;
+    transform-origin: center;
     transform: rotate(-90deg);
 }
 
 @keyframes progress {
-    0%, 100% { stroke-dashoffset: 251.2; }
+    0%, 100% { stroke-dashoffset: 282.74; }
     50% { stroke-dashoffset: 0; }
 }
 
@@ -2276,6 +2275,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
