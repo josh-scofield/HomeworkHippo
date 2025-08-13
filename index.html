@@ -1979,12 +1979,17 @@ async function callSecureAPI(question, imageFile) {
     }
 }
         
-        function showUserDashboard() {
-            document.getElementById('userDashboard').classList.add('show');
-            document.getElementById('userName').textContent = currentUser.name;
-            updateQuestionCount();
-            updateTrialDays();
-        }
+      function showUserDashboard() {
+    document.getElementById('userDashboard').classList.add('show');
+    document.getElementById('userName').textContent = currentUser.name;
+    updateQuestionCount();
+    updateTrialDays();
+    
+    // Hide marketing sections for logged-in users
+    document.querySelector('.hero').style.display = 'none';
+    document.getElementById('features').style.display = 'none';
+    document.getElementById('pricing').style.display = 'none';
+}
 
        function updateQuestionCount() {
     const askedElement = document.getElementById('questionsAsked');
@@ -2010,14 +2015,20 @@ async function callSecureAPI(question, imageFile) {
 
   
 
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('homeworkhippo_user');
-            document.getElementById('userDashboard').classList.remove('show');
-            document.getElementById('responseSection').classList.remove('show');
-            document.getElementById('questionInput').value = '';
-            showAlert('You have been signed out.', 'success');
-        }
+       function logout() {
+    currentUser = null;
+    localStorage.removeItem('homeworkhippo_user');
+    document.getElementById('userDashboard').classList.remove('show');
+    document.getElementById('responseSection').classList.remove('show');
+    document.getElementById('questionInput').value = '';
+    
+    // Show marketing sections again for logged-out users
+    document.querySelector('.hero').style.display = 'block';
+    document.getElementById('features').style.display = 'block';
+    document.getElementById('pricing').style.display = 'block';
+    
+    showAlert('You have been signed out.', 'success');
+}
 
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -2050,6 +2061,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
