@@ -983,7 +983,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 oninput="handleInputChange()"
             ></textarea>
         </div>
-               <div class="file-upload-container">
+     <div class="file-upload-container">
     <label class="file-upload-btn-progress">
         <svg class="progress-ring">
             <circle class="progress-circle" cx="44" cy="44" r="40"></circle>
@@ -993,7 +993,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <circle cx="12" cy="13" r="3"/>
         </svg>
         <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)">
-        <span class="upload-text">Upload image (optional)</span>
     </label>
     <div id="imagePreview" style="display: none;">
         <img id="previewImg" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid var(--border-primary);">
@@ -1140,7 +1139,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <style>
-/* Progress Ring Upload Button */
+/* Progress Ring Upload Button - Centered */
+.file-upload-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
 .file-upload-btn-progress {
     background: var(--bg-tertiary);
     border: none;
@@ -1149,13 +1156,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     cursor: pointer;
     width: 88px;
     height: 88px;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     transition: all 0.3s ease;
-    flex-direction: column;
-    gap: 8px;
 }
 
 .file-upload-btn-progress input {
@@ -1191,13 +1196,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     z-index: 2;
 }
 
-.upload-text {
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-top: 8px;
-    text-align: center;
-}
-
 .file-upload-btn-progress:hover {
     transform: scale(1.05);
     background: rgba(59, 130, 246, 0.05);
@@ -1207,7 +1205,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     stroke: var(--accent-purple);
     animation-duration: 1.5s;
 }
-    
+
     /* Typing animation and shimmer effect */
 #questionInput::placeholder {
     color: transparent;
@@ -2276,6 +2274,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
