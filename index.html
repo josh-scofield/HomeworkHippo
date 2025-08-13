@@ -983,15 +983,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 oninput="handleInputChange()"
             ></textarea>
         </div>
-                <div class="file-upload-container">
-                    <label class="file-upload-btn">
-                        📷 Upload image (optional)
-                        <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)">
-                    </label>
-                    <div id="imagePreview" style="display: none;">
-                        <img id="previewImg" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid var(--border-primary);">
-                    </div>
-                </div>
+               <div class="file-upload-container">
+    <label class="file-upload-btn-progress">
+        <svg class="progress-ring">
+            <circle class="progress-circle" cx="44" cy="44" r="40"></circle>
+        </svg>
+        <svg class="camera-icon-center" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+            <circle cx="12" cy="13" r="3"/>
+        </svg>
+        <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)">
+        <span class="upload-text">Upload image (optional)</span>
+    </label>
+    <div id="imagePreview" style="display: none;">
+        <img id="previewImg" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid var(--border-primary);">
+    </div>
+</div>
                 <button class="submit-btn" onclick="submitQuestion()" id="submitBtn">
                     Get solution
                 </button>
@@ -1133,6 +1140,74 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <style>
+/* Progress Ring Upload Button */
+.file-upload-btn-progress {
+    background: var(--bg-tertiary);
+    border: none;
+    padding: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 88px;
+    height: 88px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s ease;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.file-upload-btn-progress input {
+    display: none;
+}
+
+.progress-ring {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 96px;
+    height: 96px;
+}
+
+.progress-circle {
+    fill: none;
+    stroke: var(--accent-orange);
+    stroke-width: 3;
+    stroke-dasharray: 251.2;
+    stroke-dashoffset: 251.2;
+    animation: progress 3s ease-in-out infinite;
+    transform-origin: center;
+    transform: rotate(-90deg);
+}
+
+@keyframes progress {
+    0%, 100% { stroke-dashoffset: 251.2; }
+    50% { stroke-dashoffset: 0; }
+}
+
+.camera-icon-center {
+    color: var(--accent-orange);
+    z-index: 2;
+}
+
+.upload-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    text-align: center;
+}
+
+.file-upload-btn-progress:hover {
+    transform: scale(1.05);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.file-upload-btn-progress:hover .progress-circle {
+    stroke: var(--accent-purple);
+    animation-duration: 1.5s;
+}
+    
     /* Typing animation and shimmer effect */
 #questionInput::placeholder {
     color: transparent;
@@ -2201,6 +2276,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
