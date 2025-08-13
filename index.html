@@ -1108,7 +1108,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div id="passwordMatch" style="margin-top: 6px; font-size: 12px; display: none;"></div>
         </div>
         
-        <button type="submit" id="signupSubmitBtn" disabled>Create account & start trial</button>
+        <button type="submit" id="signupSubmitBtn" disabled>Start Solving Now!</button>
         
         <div style="text-align: center; margin-top: 16px; padding: 12px; background: rgba(59, 130, 246, 0.05); border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.1);">
             <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px;">
@@ -1892,54 +1892,62 @@ async function callSecureAPI(question, imageFile) {
             }
         }
 
-                async function handleSignup(event) {
-            event.preventDefault();
-            const name = document.getElementById('signupName').value;
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-            
-            try {
-                const response = await fetch('/api/users.js', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: 'signup',
-                        name,
-                        email,
-                        password
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    currentUser = data.user;
-                    localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
-                    hideModal();
-                    showUserDashboard();
-                    if (localStorage.getItem('pending_subscription') === 'true') {
+          async function handleSignup(event) {
+    event.preventDefault();
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    // Additional validation
+    if (password !== confirmPassword) {
+        showAlert('Passwords do not match.', 'error');
+        return;
+    }
+    
+    if (password.length < 6 || !/[A-Z]/.test(password) || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        showAlert('Password does not meet security requirements.', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/users.js', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'signup',
+                name: email.split('@')[0], // Use email prefix as name
+                email,
+                password
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            currentUser = data.user;
+            localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
+            hideModal();
+            showUserDashboard();
+            if (localStorage.getItem('pending_subscription') === 'true') {
                 localStorage.removeItem('pending_subscription');
                 showAlert('Account created! Redirecting to payment...', 'success');
                 setTimeout(() => {
-                    startSubscription(); // Now they're logged in, so this will work
+                    startSubscription();
                 }, 1500);
             } else {
                 showAlert('Welcome to HomeworkHippo! Your 7-day free trial has started.', 'success');
-        }
-                       
-                } else {
-          console.error('Signup failed:', data);
-          showAlert(`Signup failed: ${JSON.stringify(data.details || data.error)}`, 'error');
-        }
-                    
-            } catch (error) {
-                console.error('Signup error:', error);
-                showAlert('Signup failed. Please try again.', 'error');
             }
+        } else {
+            console.error('Signup failed:', data);
+            showAlert(`Signup failed: ${JSON.stringify(data.details || data.error)}`, 'error');
         }
-         
+    } catch (error) {
+        console.error('Signup error:', error);
+        showAlert('Signup failed. Please try again.', 'error');
+    }
+}
         async function cancelSubscriptionWithStripe() {
     try {
         const response = await fetch('/api/cancel-subscription.js', {
@@ -2042,6 +2050,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
