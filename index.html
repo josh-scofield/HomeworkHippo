@@ -1051,23 +1051,68 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </section>
 
         <!-- Pricing Section -->
-        <section class="pricing" id="pricing">
-            <h2>Simple, transparent pricing</h2>
-            <div class="pricing-card">
-                <h3>Student Plan</h3>
-                <div class="price">$17<span>/month</span></div>
-                <ul class="price-features">
-                    <li>Unlimited questions</li>
-                    <li>Image upload support</li>
-                    <li>Step-by-step solutions</li>
-                    <li>All science subjects</li>
-                    <li>24/7 availability</li>
-                    <li>Cancel anytime</li>
-                </ul>
-                <button class="btn btn-primary" onclick="startSubscription()" style="width: 100%; font-size: 16px;">Start free trial</button>
-                <p class="trial-note">7-day free trial • No commitment required</p>
+       <section class="pricing" id="pricing">
+    <h2>Choose Your Plan</h2>
+    
+    <!-- Billing Toggle -->
+    <div style="text-align: center; margin-bottom: 48px;">
+        <div style="display: inline-flex; background: var(--bg-tertiary); border-radius: 100px; padding: 4px; border: 1px solid var(--border-primary);">
+            <button class="billing-toggle active" onclick="showMonthlyPricing()" style="background: white; border: none; padding: 8px 24px; border-radius: 100px; cursor: pointer; font-weight: 500;">Monthly</button>
+            <button class="billing-toggle" onclick="showYearlyPricing()" style="background: transparent; border: none; padding: 8px 24px; border-radius: 100px; cursor: pointer; font-weight: 500;">
+                Yearly <span style="color: #10b981; font-weight: 600;">Save 34%</span>
+            </button>
+        </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 32px; max-width: 900px; margin: 0 auto;">
+        <!-- Basic Plan -->
+        <div class="pricing-card">
+            <h3>Basic</h3>
+            <div class="price">
+                <span class="monthly-price">$10<span>/month</span></span>
+                <span class="yearly-price" style="display: none;">$79<span>/year</span></span>
             </div>
-        </section>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">Perfect for regular homework help</p>
+            <ul class="price-features">
+                <li><strong>100 questions</strong> per month</li>
+                <li>Image upload support</li>
+                <li>Step-by-step solutions</li>
+                <li>All science subjects</li>
+                <li>Email support</li>
+            </ul>
+            <button class="btn btn-primary" onclick="selectPlan('basic')" style="width: 100%; font-size: 16px;">
+                Start Free Trial
+            </button>
+        </div>
+        
+        <!-- Unlimited Plan -->
+        <div class="pricing-card" style="border: 2px solid var(--accent-orange); transform: scale(1.05); position: relative;">
+            <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple)); color: white; padding: 4px 20px; border-radius: 100px; font-size: 12px; font-weight: 600;">
+                MOST POPULAR
+            </div>
+            <h3>Unlimited</h3>
+            <div class="price">
+                <span class="monthly-price">$19<span>/month</span></span>
+                <span class="yearly-price" style="display: none;">$149<span>/year</span></span>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">For serious students</p>
+            <ul class="price-features">
+                <li><strong>Unlimited questions</strong></li>
+                <li>Everything in Basic, plus:</li>
+                <li>Priority response time</li>
+                <li>Advanced explanations</li>
+                <li>Priority support</li>
+            </ul>
+            <button class="btn btn-primary" onclick="selectPlan('unlimited')" style="width: 100%; font-size: 16px;">
+                Start Free Trial
+            </button>
+        </div>
+    </div>
+    
+    <p style="text-align: center; margin-top: 32px; color: var(--text-tertiary); font-size: 14px;">
+        ✓ 7-day free trial • ✓ Cancel anytime • ✓ No hidden fees
+    </p>
+</section>
     </main>
 
     <!-- Auth Modal -->
@@ -1093,6 +1138,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </p>
         
         <input type="email" placeholder="Email address" required id="signupEmail">
+        
+        <div style="position: relative; margin-top: 16px;">
+    <input type="tel" 
+           placeholder="Phone number (for account recovery)" 
+           required 
+           id="signupPhone" 
+           pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+           oninput="formatPhoneNumber(this); updateSubmitButton();"
+           maxlength="14"
+           style="width: 100%; padding: 12px 16px; border: 1px solid var(--border-primary); border-radius: 8px; font-size: 15px; background: var(--bg-tertiary); color: var(--text-primary);">
+    <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px;">
+        Format: (555) 555-5555 • Used only for account recovery
+    </div>
+</div>
         
         <div style="position: relative;">
             <input type="password" placeholder="Create password" required id="signupPassword" 
@@ -2184,33 +2243,38 @@ async function callSecureAPI(question, imageFile) {
             }
         }
 
-          async function handleSignup(event) {
+        async function handleSignup(event) {
     event.preventDefault();
     const email = document.getElementById('signupEmail').value;
+    const phone = document.getElementById('signupPhone').value.replace(/\D/g, '');
     const password = document.getElementById('signupPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
     
-    // Additional validation
+    // Validation
     if (password !== confirmPassword) {
         showAlert('Passwords do not match.', 'error');
         return;
     }
     
     if (password.length < 6 || !/[A-Z]/.test(password) || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-        showAlert('Password does not meet security requirements.', 'error');
+        showAlert('Password must be at least 6 characters with 1 uppercase and 1 special character.', 'error');
+        return;
+    }
+    
+    if (phone.length !== 10) {
+        showAlert('Please enter a valid 10-digit phone number.', 'error');
         return;
     }
     
     try {
-        const response = await fetch('/api/users.js', {
+        const response = await fetch('/api/users', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 action: 'signup',
-                name: email.split('@')[0], // Use email prefix as name
+                name: email.split('@')[0],
                 email,
+                phone,
                 password
             })
         });
@@ -2222,24 +2286,30 @@ async function callSecureAPI(question, imageFile) {
             localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
             hideModal();
             showUserDashboard();
-            if (localStorage.getItem('pending_subscription') === 'true') {
-                localStorage.removeItem('pending_subscription');
-                showAlert('Account created! Redirecting to payment...', 'success');
+            
+            showAlert('Welcome! Check your email to verify your account. Your 7-day trial has started!', 'success');
+            
+            // Check if they selected a plan before signing up
+            const selectedPlan = localStorage.getItem('selected_plan');
+            if (selectedPlan) {
+                const billingPeriod = localStorage.getItem('billing_period') || 'monthly';
+                localStorage.removeItem('selected_plan');
+                localStorage.removeItem('billing_period');
                 setTimeout(() => {
-                    startSubscription();
-                }, 1500);
-            } else {
-                showAlert('Welcome to HomeworkHippo! Your 7-day free trial has started.', 'success');
+                    startCheckout(selectedPlan, billingPeriod);
+                }, 2000);
             }
         } else {
-            console.error('Signup failed:', data);
-            showAlert(`Signup failed: ${JSON.stringify(data.details || data.error)}`, 'error');
+            showAlert(data.error || 'Signup failed. Please try again.', 'error');
         }
     } catch (error) {
         console.error('Signup error:', error);
         showAlert('Signup failed. Please try again.', 'error');
     }
 }
+
+
+        
         async function cancelSubscriptionWithStripe() {
     try {
         const response = await fetch('/api/cancel-subscription.js', {
@@ -2283,24 +2353,27 @@ async function callSecureAPI(question, imageFile) {
     document.getElementById('pricing').style.display = 'none';
 }
 
-       function updateQuestionCount() {
+   function updateQuestionCount() {
     const askedElement = document.getElementById('questionsAsked');
     const remainingElement = document.getElementById('questionsRemaining');
     
-    if (askedElement) {
-        askedElement.textContent = questionCount;
+    if (askedElement && currentUser) {
+        askedElement.textContent = currentUser.questions_this_month || 0;
     }
     
-    if (remainingElement) {
-        if (currentUser && currentUser.subscribed) {
-            // For subscribed users
+    if (remainingElement && currentUser) {
+        if (currentUser.plan_type === 'unlimited') {
             remainingElement.textContent = '∞';
-            remainingElement.nextElementSibling.textContent = 'Questions remaining';
+            remainingElement.nextElementSibling.textContent = 'Unlimited questions';
+        } else if (currentUser.plan_type === 'basic') {
+            const remaining = Math.max(0, 100 - (currentUser.questions_this_month || 0));
+            remainingElement.textContent = remaining;
+            remainingElement.nextElementSibling.textContent = 'Questions remaining this month';
         } else {
-            // For trial users
+            // Trial users
             const remaining = Math.max(0, 3 - questionCount);
             remainingElement.textContent = remaining;
-            remainingElement.nextElementSibling.textContent = 'Questions remaining';
+            remainingElement.nextElementSibling.textContent = 'Trial questions remaining';
         }
     }
 }
@@ -2353,6 +2426,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
