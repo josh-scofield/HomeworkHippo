@@ -1673,12 +1673,16 @@ function updateSubmitButton() {
     </div>
 
     <script>
-        // Configuration with your API keys
-        const CONFIG = {
-            STRIPE_PUBLISHABLE_KEY: 'pk_live_51RrjC3L2nArkOzJtpcGX74Pbll4bQJ9bRzseceogRrA3MBe0OAnmNxYGCeJn4sxt6rgIBiknJuNkXS3CU5tHQTFf00HtLxSp3o',
-            STRIPE_PRICE_ID: 'price_1RrjOtL2nArkOzJtVCE2NeGD'
-        };
-
+        // uration with your API keys
+       const CONFIG = {
+    STRIPE_PUBLISHABLE_KEY: 'pk_live_51RrjC3L2nArkOzJtpcGX74Pbll4bQJ9bRzseceogRrA3MBe0OAnmNxYGCeJn4sxt6rgIBiknJuNkXS3CU5tHQTFf00HtLxSp3o',
+    PRICES: {
+        BASIC_MONTHLY: 'price_1RzmorL2nArkOzJtS1wOqDWt',
+        BASIC_YEARLY: 'price_1Rzms9L2nArkOzJtz9G8avYa',
+        UNLIMITED_MONTHLY: 'price_1RzmuLL2nArkOzJtQTyj3Syv',
+        UNLIMITED_YEARLY: 'price_1RzmvcL2nArkOzJtWOUv9Sqs'
+    }
+};
         // Initialize Stripe
         const stripe = Stripe(CONFIG.STRIPE_PUBLISHABLE_KEY);
 
@@ -2276,6 +2280,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
