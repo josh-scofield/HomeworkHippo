@@ -16,6 +16,33 @@ export default async function handler(req, res) {
 
   // Email templates
   const templates = {
+    welcome_verification: {
+  subject: 'Welcome to HomeworkHippo! Please verify your email 🦛',
+  html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h1 style="color: #3B82F6;">Welcome to HomeworkHippo!</h1>
+      <p>Hi there,</p>
+      <p>Thanks for signing up! Your 7-day free trial has started.</p>
+      <p style="margin: 24px 0;">
+        <a href="https://homeworkhippo.com/verify?token=${req.body.verificationToken}" 
+           style="display: inline-block; padding: 12px 24px; background: #3B82F6; color: white; text-decoration: none; border-radius: 6px;">
+          Verify Your Email
+        </a>
+      </p>
+      <p>This link expires in 24 hours. You can still use HomeworkHippo while unverified.</p>
+      <h2>What you get with your trial:</h2>
+      <ul>
+        <li>3 free questions to try our AI</li>
+        <li>Image upload support</li>
+        <li>Step-by-step solutions</li>
+      </ul>
+      <p>Questions? Reply to this email!</p>
+      <hr style="border: 1px solid #eee; margin: 20px 0;">
+      <p style="font-size: 12px; color: #666;">HomeworkHippo - AI-Powered Science Help</p>
+    </div>
+  `
+},
+    
     welcome: {
       subject: 'Welcome to HomeworkHippo! 🦛',
       html: `
