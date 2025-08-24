@@ -1889,11 +1889,18 @@ async function startCheckout(planType, billingPeriod) {
         }
         
         // Check question limit for trial users
-        if (!currentUser.subscribed && questionCount >= 3) {
-            showAlert('You\'ve used all 3 free trial questions! Subscribe now for unlimited access.', 'error');
-            startSubscription();
-            return;
-        }
+       if (!currentUser.subscribed && questionCount >= 3) {
+        showAlert('You\'ve used all 3 free trial questions! Please subscribe to continue.', 'error');
+        showSubscriptionModal();
+        return;
+    }
+    
+    if (currentUser.subscribed && currentUser.plan_type === 'basic' && 
+        currentUser.questions_this_month >= 100) {
+        showAlert('You\'ve reached your 100 question monthly limit. Upgrade to Unlimited for more!', 'error');
+        showSubscriptionModal();
+        return;
+    }
 
             const responseSection = document.getElementById('responseSection');
             const loadingIndicator = document.getElementById('loadingIndicator');
@@ -2426,6 +2433,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
