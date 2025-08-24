@@ -47,11 +47,20 @@ export default async function handler(req, res) {
             'Content-Type': 'application/json',
             'Prefer': 'return=representation'
           },
-          body: JSON.stringify({
-            subscribed: true,
-            stripe_customer_id: customerId
-          })
-        });
+        // Detect plan type from price ID
+const priceId = subscription.items.data[0].price.id;
+let planType = 'basic'; // default
+
+if (priceId === process.env.STRIPE_UNLIMITED_MONTHLY || 
+    priceId === process.env.STRIPE_UNLIMITED_YEARLY) {
+  planType = 'unlimited';
+}
+
+body: JSON.stringify({
+  subscribed: true,
+  stripe_customer_id: customerId,
+  plan_type: planType
+})
         
         if (response.ok) {
           console.log('User subscription activated:', customerEmail);
