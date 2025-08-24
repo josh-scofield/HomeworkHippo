@@ -1683,6 +1683,79 @@ function updateSubmitButton() {
         UNLIMITED_YEARLY: 'price_1RzmvcL2nArkOzJtWOUv9Sqs'
     }
 };
+       
+        // Phone number formatting
+function formatPhoneNumber(input) {
+    let value = input.value.replace(/\D/g, '');
+    if (value.length > 0) {
+        if (value.length <= 3) {
+            value = `(${value}`;
+        } else if (value.length <= 6) {
+            value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+        } else {
+            value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+        }
+    }
+    input.value = value;
+}
+
+// Pricing variables
+let currentBillingPeriod = 'monthly';
+
+function showMonthlyPricing() {
+    currentBillingPeriod = 'monthly';
+    document.querySelectorAll('.monthly-price').forEach(el => el.style.display = 'block');
+    document.querySelectorAll('.yearly-price').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.billing-toggle')[0].classList.add('active');
+    document.querySelectorAll('.billing-toggle')[1].classList.remove('active');
+}
+
+function showYearlyPricing() {
+    currentBillingPeriod = 'yearly';
+    document.querySelectorAll('.yearly-price').forEach(el => el.style.display = 'block');
+    document.querySelectorAll('.monthly-price').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.billing-toggle')[1].classList.add('active');
+    document.querySelectorAll('.billing-toggle')[0].classList.remove('active');
+}
+
+function selectPlan(planType) {
+    if (!currentUser) {
+        localStorage.setItem('selected_plan', planType);
+        localStorage.setItem('billing_period', currentBillingPeriod);
+        showModal('signup');
+        return;
+    }
+    
+    startCheckout(planType, currentBillingPeriod);
+}
+
+async function startCheckout(planType, billingPeriod) {
+    const priceKey = `${planType.toUpperCase()}_${billingPeriod.toUpperCase()}`;
+    const priceId = CONFIG.PRICES[priceKey];
+    
+    try {
+        const { error } = await stripe.redirectToCheckout({
+            lineItems: [{
+                price: priceId,
+                quantity: 1,
+            }],
+            mode: 'subscription',
+            successUrl: window.location.origin + '/success.html?plan=' + planType,
+            cancelUrl: window.location.origin + '/#pricing',
+            customerEmail: currentUser.email,
+        });
+
+        if (error) {
+            console.error('Stripe error:', error);
+            showAlert('Error starting subscription. Please try again.', 'error');
+        }
+    } catch (error) {
+        console.error('Checkout error:', error);
+        showAlert('Error starting subscription. Please try again.', 'error');
+    }
+}
+
+        
         // Initialize Stripe
         const stripe = Stripe(CONFIG.STRIPE_PUBLISHABLE_KEY);
 
@@ -2280,6 +2353,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
