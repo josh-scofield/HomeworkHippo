@@ -116,7 +116,7 @@ export default async function handler(req, res) {
           const userData = JSON.parse(responseText);
           
           // Send welcome email with verification link
-          await fetch(`${process.env.VERCEL_URL || 'https://homeworkhippo.com'}/api/send-email`, {
+          await fetch(`${process.env.VERCEL_URL || 'https://homeworkhippo.com'}/api/send-email.js`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
