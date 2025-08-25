@@ -1917,6 +1917,15 @@ async function startCheckout(planType, billingPeriod) {
                 const response = await callSecureAPI(question, imageFile);
                 responseContent.innerHTML = formatResponse(response);
                 
+                 await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            action: 'incrementQuestions',
+            email: currentUser.email
+        })
+    });
+                
                 questionCount++;
                 localStorage.setItem('question_count', questionCount.toString());
                 updateQuestionCount();
@@ -2433,6 +2442,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
