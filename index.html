@@ -1881,18 +1881,18 @@ async function startCheckout(planType, billingPeriod) {
             console.error('Error refreshing user data:', error);
         }
         
-        if (!currentUser.subscribed && !isInTrial()) {
-            showAlert('Your trial has ended. Please subscribe to continue using HomeworkHippo.', 'error');
-            startSubscription();
-            return;
-        }
-        
-        // Check question limit for trial users
-       if (!currentUser.subscribed && questionCount >= 3) {
-        showAlert('You\'ve used all 3 free trial questions! Please subscribe to continue.', 'error');
-        showSubscriptionModal();
-        return;
-    }
+       // Check question limits
+if (!currentUser.subscribed && questionCount >= 3) {
+    showAlert('You\'ve used all 3 free trial questions! Please choose a plan to continue.', 'error');
+    startSubscription();
+    return;
+}
+
+if (currentUser.subscribed && currentUser.plan_type === 'basic' && currentUser.questions_this_month >= 100) {
+    showAlert('You\'ve reached your 100 question monthly limit. Upgrade to Unlimited!', 'error');
+    startSubscription();
+    return;
+}
     
     if (currentUser.subscribed && currentUser.plan_type === 'basic' && 
         currentUser.questions_this_month >= 100) {
@@ -1991,12 +1991,7 @@ async function callSecureAPI(question, imageFile) {
         }
 
         // Check if user is in trial period
-        function isInTrial() {
-        if (!currentUser) return false;
-        // Use trial_end (with underscore) from database
-        if (!currentUser.trial_end) return true; // If no trial end, assume in trial
-        return new Date() < new Date(currentUser.trial_end);
-    }
+     
         // Start subscription process
      async function startSubscription() {
     // If no user logged in, close subscription modal and show signup
@@ -2006,28 +2001,11 @@ async function callSecureAPI(question, imageFile) {
         showModal('signup'); // Show signup modal
         return;
     }
-
-    // If user is logged in, proceed with Stripe checkout
-    try {
-        const { error } = await stripe.redirectToCheckout({
-            lineItems: [{
-                price: CONFIG.STRIPE_PRICE_ID,
-                quantity: 1,
-            }],
-            mode: 'subscription',
-            successUrl: window.location.origin + '/success.html',
-            cancelUrl: window.location.origin + '/#pricing',
-            customerEmail: currentUser.email,
-        });
-
-        if (error) {
-            console.error('Stripe error:', error);
-            showAlert('Error starting subscription. Please try again.', 'error');
-        }
-    } catch (error) {
-        console.error('Subscription error:', error);
-        showAlert('Error starting subscription. Please try again.', 'error');
-    }
+    
+    // If user is logged in, redirect to pricing section to choose a plan
+    hideSubscriptionModal();
+    document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' });
+    showAlert('Please select a plan below', 'success');
 }
 
 
@@ -2075,7 +2053,7 @@ async function callSecureAPI(question, imageFile) {
         } else {
             // Reset to normal trial text if not from subscription
             if (subtitle) {
-                subtitle.innerHTML = 'Sign up to start your 7-day free trial';
+                subtitle.innerHTML = 'Sign up to get 3 free questions';
             }
             const submitButton = signupForm.querySelector('button[type="submit"]');
             if (submitButton) {
@@ -2445,6 +2423,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
