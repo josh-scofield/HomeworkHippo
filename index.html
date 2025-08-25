@@ -1916,7 +1916,7 @@ async function startCheckout(planType, billingPeriod) {
                 const response = await callSecureAPI(question, imageFile);
                 responseContent.innerHTML = formatResponse(response);
                 
-                 await fetch('/api/users', {
+                 await fetch('/api/users.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2282,7 +2282,7 @@ async function callSecureAPI(question, imageFile) {
     }
     
     try {
-        const response = await fetch('/api/users', {
+        const response = await fetch('/api/users.js', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -2441,6 +2441,7 @@ async function callSecureAPI(question, imageFile) {
 </body>
 
 </html>
+
 
 
 
