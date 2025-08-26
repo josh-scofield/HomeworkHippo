@@ -910,7 +910,31 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(28px);
 }
-</style>
+
+    /* Animated toggle hint */
+@keyframes togglePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+}
+
+.toggle-switch {
+    animation: togglePulse 2s infinite;
+}
+
+.toggle-switch:hover {
+    animation: none;
+}
+
+/* Highlight savings when monthly is selected */
+.billing-toggle-container {
+    position: relative;
+}
+    
+    
+    
+    
+    
+    </style>
     
     
     </style>
@@ -1106,16 +1130,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
            
            
            <!-- Billing Toggle -->
-   <div style="text-align: center; margin-bottom: 48px;">
-    <div style="display: inline-flex; align-items: center; gap: 16px; background: var(--bg-tertiary); padding: 8px; border-radius: 100px;">
-        <span style="font-weight: 500; color: var(--text-primary); font-size: 14px;">Monthly</span>
+  <div style="text-align: center; margin-bottom: 48px;">
+    <div style="display: inline-flex; align-items: center; gap: 16px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05)); padding: 12px 20px; border-radius: 100px; border: 1px solid var(--accent-orange);">
+        <span style="font-weight: 600; color: var(--text-primary); font-size: 14px;">Monthly</span>
         <label class="toggle-switch">
             <input type="checkbox" id="billingToggle" onchange="toggleBilling()">
             <span class="slider"></span>
         </label>
-        <span style="font-weight: 500; color: var(--text-primary); font-size: 14px;">
-            Yearly <span style="color: #10b981; font-weight: 600; font-size: 12px;">(Save 34%)</span>
+        <span style="font-weight: 600; color: var(--text-primary); font-size: 14px;">
+            Yearly <span style="background: linear-gradient(135deg, #10b981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; font-size: 13px;">SAVE 34%</span>
         </span>
+    </div>
+    <div style="margin-top: 8px; font-size: 12px; color: var(--accent-orange); font-weight: 600;">
+        💡 Tip: Switch to yearly and save over $40!
     </div>
 </div>
     
@@ -2484,6 +2511,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
