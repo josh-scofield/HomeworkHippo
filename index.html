@@ -431,7 +431,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             overflow: visible;
         }
 
-        .pricing-card::before {
+        .pricing-card:first-child::before {
             content: 'BEST VALUE';
             position: absolute;
             top: 20px;
@@ -443,6 +443,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             font-weight: 600;
             letter-spacing: 0.05em;
             transform: rotate(45deg);
+            border-radius: 4px;
         }
 
         .pricing-card h3 {
@@ -2498,6 +2499,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
