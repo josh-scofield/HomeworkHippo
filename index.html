@@ -419,17 +419,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         }
 
         .pricing-card {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-primary);
-            border-radius: 16px;
-            padding: 40px;
-            max-width: 400px;
-            margin: 0 auto;
-            text-align: center;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            overflow: visible;
-        }
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 400px;
+    width: 400px;
+    height: 500px;
+    margin: 0 auto;
+    text-align: center;
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    animation: pulseGlow 4s ease-in-out infinite;
+}
 
         .pricing-card:first-child::before {
             content: 'BEST VALUE';
@@ -2499,6 +2504,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
