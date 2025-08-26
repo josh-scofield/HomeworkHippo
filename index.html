@@ -1053,7 +1053,70 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
        <section class="pricing" id="pricing">
     <h2>Choose Your Plan</h2>
     
-    <!-- Billing Toggle -->
+   /* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 32px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border-secondary);
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input:checked + .slider {
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple));
+}
+
+input:checked + .slider:before {
+    transform: translateX(28px);
+}
+
+/* Make cards more interactive */
+.pricing-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.pricing-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+}
+
+.pricing-card.featured:hover {
+    transform: scale(1.08) translateY(-8px) !important;
+}
+           
+           
+           <!-- Billing Toggle -->
    <div style="text-align: center; margin-bottom: 48px;">
     <div style="display: inline-flex; align-items: center; gap: 16px; background: var(--bg-tertiary); padding: 8px; border-radius: 100px;">
         <span style="font-weight: 500; color: var(--text-primary); font-size: 14px;">Monthly</span>
@@ -1763,22 +1826,28 @@ function formatPhoneNumber(input) {
 // Pricing variables
 let currentBillingPeriod = 'monthly';
 
+function toggleBilling() {
+    const isYearly = document.getElementById('billingToggle').checked;
+    if (isYearly) {
+        showYearlyPricing();
+    } else {
+        showMonthlyPricing();
+    }
+}
+
 function showMonthlyPricing() {
     currentBillingPeriod = 'monthly';
+    document.getElementById('billingToggle').checked = false;
     document.querySelectorAll('.monthly-price').forEach(el => el.style.display = 'block');
     document.querySelectorAll('.yearly-price').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('.billing-toggle')[0].classList.add('active');
-    document.querySelectorAll('.billing-toggle')[1].classList.remove('active');
 }
 
 function showYearlyPricing() {
     currentBillingPeriod = 'yearly';
+    document.getElementById('billingToggle').checked = true;
     document.querySelectorAll('.yearly-price').forEach(el => el.style.display = 'block');
     document.querySelectorAll('.monthly-price').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('.billing-toggle')[1].classList.add('active');
-    document.querySelectorAll('.billing-toggle')[0].classList.remove('active');
 }
-
 function selectPlan(planType) {
     if (!currentUser) {
         localStorage.setItem('selected_plan', planType);
@@ -2426,6 +2495,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
