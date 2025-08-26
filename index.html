@@ -425,7 +425,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     padding: 40px;
     max-width: 400px;
     width: 400px;
-    height: 600px;
+    height: 550px;
     margin: 0 auto;
     text-align: center;
     box-shadow: var(--shadow-xl);
@@ -434,6 +434,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     display: flex;
     flex-direction: column;
     animation: pulseGlow 4s ease-in-out infinite;
+}
+
+        @keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+    50% {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 30px rgba(59, 130, 246, 0.5);
+    }
 }
 
         .pricing-card:first-child::before {
@@ -2504,6 +2513,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
