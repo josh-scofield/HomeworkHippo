@@ -2501,7 +2501,7 @@ function showTestGeneratorButton() {
             
             // Check question limits
 if (!currentUser.subscribed && questionCount >= 3) {
-    startSubscription();
+    showTrialExpiredModal();
     return;
 }
 
@@ -3113,6 +3113,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
