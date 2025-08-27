@@ -2434,6 +2434,13 @@ async function callSecureAPI(question, imageFile) {
     document.querySelector('.hero').style.display = 'none';
     document.getElementById('features').style.display = 'none';
     document.getElementById('pricing').style.display = 'none';
+    // Hide sign-in button in navigation
+    document.querySelector('.nav-links .btn-primary').style.display = 'none';
+    
+    // Hide Features and Pricing navigation links
+    document.querySelectorAll('.nav-links a[href="#features"], .nav-links a[href="#pricing"]').forEach(link => {
+        link.style.display = 'none';
+    });
 }
 
    function updateQuestionCount() {
@@ -2474,6 +2481,12 @@ async function callSecureAPI(question, imageFile) {
     document.querySelector('.hero').style.display = 'block';
     document.getElementById('features').style.display = 'block';
     document.getElementById('pricing').style.display = 'block';
+
+    // Show sign-in button and navigation links again
+    document.querySelector('.nav-links .btn-primary').style.display = 'inline-block';
+    document.querySelectorAll('.nav-links a[href="#features"], .nav-links a[href="#pricing"]').forEach(link => {
+        link.style.display = 'inline-block';
+    });
     
     showAlert('You have been signed out.', 'success');
 }
@@ -2513,6 +2526,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
