@@ -2891,6 +2891,8 @@ async function callSecureAPI(question, imageFile) {
     // Hide Features and Pricing navigation links
     document.querySelectorAll('.nav-links a[href="#features"], .nav-links a[href="#pricing"]').forEach(link => {
         link.style.display = 'none';
+    });
+          
     // Show test generator button for logged-in users
     showTestGeneratorButton();
     }
@@ -2986,6 +2988,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
