@@ -1087,6 +1087,87 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
         </section>
 
+        <!-- Test Generator Section -->
+<section class="test-generator-section" id="testGenerator">
+    <div class="test-generator-header">
+        <h2>📝 Free Test Generator</h2>
+        <p>Create a custom practice test from your study materials</p>
+    </div>
+    
+    <div id="testSetup" class="test-setup">
+        <div class="test-input-area">
+            <textarea id="testSourceInput" 
+                placeholder="Paste or type sample problems here (e.g., 'Balance H2 + O2 → H2O' or 'Calculate the velocity of...')"></textarea>
+        </div>
+        
+        <div class="file-upload-container">
+            <label class="file-upload-btn">
+                <span>📸 Upload image of problems</span>
+                <input type="file" id="testImageUpload" accept="image/*" onchange="handleTestImageUpload(event)">
+            </label>
+            <div id="testImagePreview" style="display: none;">
+                <img id="testPreviewImg" style="max-width: 200px; border-radius: 8px;">
+            </div>
+        </div>
+        
+        <div class="test-controls">
+            <div class="question-count-selector">
+                <label>Number of questions:</label>
+                <select id="questionCount">
+                    <option value="5">5 questions</option>
+                    <option value="10" selected>10 questions</option>
+                    <option value="15">15 questions</option>
+                    <option value="20">20 questions (max)</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-primary" onclick="generateTest()" id="generateTestBtn">
+                Generate Test
+            </button>
+        </div>
+    </div>
+    
+    <div id="testArea" style="display: none;">
+        <div class="test-progress">
+            <span>Question <span id="currentQuestion">1</span> of <span id="totalQuestions">10</span></span>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+        
+        <div class="question-display">
+            <h3 id="questionText"></h3>
+            <textarea id="answerInput" placeholder="Type your answer here..." class="answer-box"></textarea>
+            <div class="test-navigation">
+                <button class="btn btn-secondary" onclick="previousQuestion()" id="prevBtn">Previous</button>
+                <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn">Next</button>
+                <button class="btn btn-primary" onclick="submitTest()" id="submitTestBtn" style="display: none;">Grade Test!</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Results Modal -->
+    <div class="modal" id="testResultsModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="modal-close" onclick="hideTestResults()">&times;</button>
+            <div class="test-results">
+                <h2>Test Results</h2>
+                <div class="grade-display">
+                    <div class="grade-circle" id="gradeCircle">
+                        <span class="grade-percent">85%</span>
+                    </div>
+                    <div class="grade-letter" id="gradeLetter">B</div>
+                </div>
+                <div class="results-breakdown">
+                    <p><strong>Correct:</strong> <span id="correctCount">8</span> / <span id="totalCount">10</span></p>
+                    <div id="incorrectAnswers" class="incorrect-answers"></div>
+                </div>
+                <button class="btn btn-primary" onclick="retakeTest()">Try Another Test</button>
+            </div>
+        </div>
+    </div>
+</section>
+
         <!-- Features Section -->
         <section class="features" id="features">
             <h2>Why choose HomeworkHippo?</h2>
@@ -2526,6 +2607,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
