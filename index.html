@@ -1654,6 +1654,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     border-left: 4px solid var(--error);
 }
 
+    /* Trial Modal Plan Cards */
+.trial-plan-card {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-primary);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.trial-plan-card:hover {
+    border-color: var(--accent-orange);
+}
+
+.trial-plan-card.active {
+    border-color: var(--accent-orange);
+    background: rgba(59, 130, 246, 0.05);
+}
+
     
 </style>
 
@@ -2003,6 +2023,74 @@ function updateSubmitButton() {
             </div>
         </div>
     </div>
+
+            <!-- Trial Expired Modal -->
+<div class="modal" id="trialExpiredModal">
+    <div class="modal-content" style="max-width: 600px;">
+        <button class="modal-close" onclick="hideTrialExpiredModal()">&times;</button>
+        <div style="text-align: center; padding: 1rem;">
+            <h2 style="color: var(--accent-orange); margin-bottom: 1rem;">Choose Your Plan</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">
+                Your 3 free questions are used up. Pick a plan to continue getting help with your science homework.
+            </p>
+            
+            <!-- Billing Toggle -->
+            <div style="margin-bottom: 2rem;">
+                <div style="display: inline-flex; align-items: center; gap: 16px; background: var(--bg-tertiary); padding: 8px 16px; border-radius: 50px;">
+                    <span style="font-size: 14px; color: var(--text-secondary);">Monthly</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="trialModalBillingToggle" onchange="toggleTrialModalPricing()">
+                        <span class="slider"></span>
+                    </label>
+                    <span style="font-size: 14px; color: var(--text-secondary);">
+                        Yearly <span style="color: var(--accent-orange); font-weight: 600; font-size: 12px;">Save 34%</span>
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Plan Options -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 2rem;">
+                <!-- Basic Plan -->
+                <div class="trial-plan-card active" onclick="selectTrialPlan('basic')" id="basicTrialCard">
+                    <h3>Basic</h3>
+                    <div class="price">
+                        <span class="monthly-price">$10<span>/month</span></span>
+                        <span class="yearly-price" style="display: none;">$79<span>/year</span></span>
+                    </div>
+                    <ul style="list-style: none; text-align: left; margin: 16px 0; font-size: 14px;">
+                        <li>✓ 100 questions/month</li>
+                        <li>✓ Image uploads</li>
+                        <li>✓ Step-by-step solutions</li>
+                    </ul>
+                    <div class="recommended-badge" style="background: var(--accent-orange); color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">RECOMMENDED</div>
+                </div>
+                
+                <!-- Unlimited Plan -->
+                <div class="trial-plan-card" onclick="selectTrialPlan('unlimited')" id="unlimitedTrialCard">
+                    <h3>Unlimited</h3>
+                    <div class="price">
+                        <span class="monthly-price">$19<span>/month</span></span>
+                        <span class="yearly-price" style="display: none;">$149<span>/year</span></span>
+                    </div>
+                    <ul style="list-style: none; text-align: left; margin: 16px 0; font-size: 14px;">
+                        <li>✓ Unlimited questions</li>
+                        <li>✓ Priority responses</li>
+                        <li>✓ Advanced explanations</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="proceedToCheckout()" id="trialCheckoutBtn" style="width: 100%; font-size: 16px; padding: 16px; margin-bottom: 1rem;">
+                Start Basic Plan - $10/month
+            </button>
+            
+            <p style="color: var(--text-tertiary); font-size: 12px;">
+                7-day free trial • Cancel anytime • Secure payment via Stripe
+            </p>
+        </div>
+    </div>
+</div>
+    
 
     <script>
         // uration with your API keys
@@ -2942,6 +3030,56 @@ async function callSecureAPI(question, imageFile) {
 }
 
 
+        // Trial expired modal functions
+let selectedTrialPlan = 'basic';
+let trialModalBilling = 'monthly';
+
+function showTrialExpiredModal() {
+    document.getElementById('trialExpiredModal').classList.add('show');
+}
+
+function hideTrialExpiredModal() {
+    document.getElementById('trialExpiredModal').classList.remove('show');
+}
+
+function selectTrialPlan(planType) {
+    selectedTrialPlan = planType;
+    
+    document.querySelectorAll('.trial-plan-card').forEach(card => {
+        card.classList.remove('active');
+    });
+    document.getElementById(planType + 'TrialCard').classList.add('active');
+    
+    const btn = document.getElementById('trialCheckoutBtn');
+    const isYearly = document.getElementById('trialModalBillingToggle').checked;
+    
+    if (planType === 'basic') {
+        btn.textContent = isYearly ? 'Start Basic Plan - $79/year' : 'Start Basic Plan - $10/month';
+    } else {
+        btn.textContent = isYearly ? 'Start Unlimited Plan - $149/year' : 'Start Unlimited Plan - $19/month';
+    }
+}
+
+function toggleTrialModalPricing() {
+    const isYearly = document.getElementById('trialModalBillingToggle').checked;
+    trialModalBilling = isYearly ? 'yearly' : 'monthly';
+    
+    document.querySelectorAll('#trialExpiredModal .monthly-price').forEach(el => {
+        el.style.display = isYearly ? 'none' : 'block';
+    });
+    document.querySelectorAll('#trialExpiredModal .yearly-price').forEach(el => {
+        el.style.display = isYearly ? 'block' : 'none';
+    });
+    
+    selectTrialPlan(selectedTrialPlan);
+}
+
+function proceedToCheckout() {
+    hideTrialExpiredModal();
+    startCheckout(selectedTrialPlan, trialModalBilling);
+}
+
+
         // Smooth scrolling for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -2976,6 +3114,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
