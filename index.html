@@ -2501,7 +2501,6 @@ function showTestGeneratorButton() {
             
             // Check question limits
 if (!currentUser.subscribed && questionCount >= 3) {
-    showAlert('You\'ve used all 3 free trial questions! Please choose a plan to continue.', 'error');
     startSubscription();
     return;
 }
@@ -3114,6 +3113,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
