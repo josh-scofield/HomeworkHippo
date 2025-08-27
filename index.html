@@ -1037,9 +1037,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="stat-number" id="questionsAsked">0</div>
             <div class="stat-label">Questions this month</div>
         </div>
+           
         <div class="stat-card">
             <div class="stat-number" id="questionsRemaining">3</div>
             <div class="stat-label">Questions remaining</div>
+        </div>
+                <div style="text-align: center; margin-top: 32px;">
+        <button class="btn btn-primary" onclick="showTestGenerator()" style="padding: 14px 32px; font-size: 16px;">
+            📝 Open Test Generator (Free!)
+        </button>
         </div>
     </div>
 </section>
@@ -1086,6 +1092,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <div class="response-content" id="responseContent"></div>
             </div>
         </section>
+
+        <!-- Test Generator Section (Hidden by default) -->
+<section class="test-generator-section" id="testGenerator" style="display: none;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2>📝 Test Generator</h2>
+        <button class="btn btn-secondary" onclick="hideTestGenerator()">← Back to Dashboard</button>
+    </div>
+    
+    <!-- Rest of your test generator HTML here -->
+    <div id="testSetup" class="test-setup">
+        <!-- All the test generator content from my previous message -->
+    </div>
+</section>
 
         <!-- Test Generator Section -->
 <section class="test-generator-section" id="testGenerator">
@@ -2362,7 +2381,48 @@ function retakeTest() {
             console.error('Error refreshing user data:', error);
         }
         
-       // Check question limits
+      function showTestGenerator() {
+    // Hide other sections
+    document.getElementById('userDashboard').style.display = 'none';
+    document.getElementById('app').style.display = 'none';
+    
+    // Show test generator
+    document.getElementById('testGenerator').style.display = 'block';
+    
+    // Scroll to top
+    window.scrollTo(0, 0);
+}
+
+function hideTestGenerator() {
+    // Hide test generator
+    document.getElementById('testGenerator').style.display = 'none';
+    
+    // Show dashboard again
+    document.getElementById('userDashboard').style.display = 'block';
+    showUserDashboard();
+}
+
+function showTestGeneratorButton() {
+    // This creates a nav link for logged-in users only
+    const navLinks = document.querySelector('.nav-links');
+    
+    // Check if button already exists
+    if (!document.getElementById('testGenNavBtn')) {
+        const testGenLink = document.createElement('a');
+        testGenLink.id = 'testGenNavBtn';
+        testGenLink.href = '#';
+        testGenLink.textContent = 'Test Generator';
+        testGenLink.onclick = function(e) {
+            e.preventDefault();
+            showTestGenerator();
+        };
+        
+        // Insert before the sign-in button (which is now hidden)
+        navLinks.insertBefore(testGenLink, navLinks.querySelector('.btn-primary'));
+    }
+}
+            
+            // Check question limits
 if (!currentUser.subscribed && questionCount >= 3) {
     showAlert('You\'ve used all 3 free trial questions! Please choose a plan to continue.', 'error');
     startSubscription();
@@ -2831,7 +2891,9 @@ async function callSecureAPI(question, imageFile) {
     // Hide Features and Pricing navigation links
     document.querySelectorAll('.nav-links a[href="#features"], .nav-links a[href="#pricing"]').forEach(link => {
         link.style.display = 'none';
-    });
+    // Show test generator button for logged-in users
+    showTestGeneratorButton();
+    }
 }
 
    function updateQuestionCount() {
@@ -2868,6 +2930,13 @@ async function callSecureAPI(question, imageFile) {
     document.getElementById('responseSection').classList.remove('show');
     document.getElementById('questionInput').value = '';
     
+     // Hide test generator
+    document.getElementById('testGenerator').style.display = 'none';
+    
+    // Remove test generator nav button
+    const testGenBtn = document.getElementById('testGenNavBtn');
+    if (testGenBtn) testGenBtn.remove();
+           
     // Show marketing sections again for logged-out users
     document.querySelector('.hero').style.display = 'block';
     document.getElementById('features').style.display = 'block';
@@ -2917,6 +2986,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
