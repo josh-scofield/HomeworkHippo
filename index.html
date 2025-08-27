@@ -1671,7 +1671,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
 // Typing animation variables
 let typingInterval;
-let currentQuestionIndex = 0;
+let currentTypingIndex = 0;
 let currentCharIndex = 0;
 let isDeleting = false;
 let isTypingActive = true;
@@ -1688,7 +1688,7 @@ function startTypingAnimation() {
     if (!isTypingActive) return;
     
     const placeholder = document.getElementById('typingPlaceholder');
-    const currentQuestion = questions[currentQuestionIndex];
+    const currentQuestion = questions[currentTypingIndex];
     
     if (!isDeleting && currentCharIndex <= currentQuestion.length) {
         // Typing
@@ -2987,6 +2987,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
