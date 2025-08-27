@@ -2105,6 +2105,215 @@ async function startCheckout(planType, billingPeriod) {
             updateQuestionCount();
         });
 
+        // Test Generator Variables
+let testQuestions = [];
+let currentQuestionIndex = 0;
+let userAnswers = [];
+let testGenerated = false;
+
+// Handle test image upload
+function handleTestImageUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('testImagePreview').style.display = 'block';
+            document.getElementById('testPreviewImg').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Generate test using Claude API
+async function generateTest() {
+    const sourceText = document.getElementById('testSourceInput').value;
+    const imageFile = document.getElementById('testImageUpload').files[0];
+    const questionCount = document.getElementById('questionCount').value;
+    
+    if (!sourceText && !imageFile) {
+        showAlert('Please provide sample problems or upload an image', 'error');
+        return;
+    }
+    
+    const btn = document.getElementById('generateTestBtn');
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    
+    try {
+        // Prepare request
+        const requestBody = {
+            action: 'generateTest',
+            sourceContent: sourceText,
+            questionCount: parseInt(questionCount),
+            subject: 'science' // You can make this dynamic
+        };
+        
+        if (imageFile) {
+            const base64 = await fileToBase64(imageFile);
+            requestBody.imageData = base64.split(',')[1];
+        }
+        
+        // Call your API
+        const response = await fetch('/api/test-generator.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestBody)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            testQuestions = data.questions;
+            userAnswers = new Array(testQuestions.length).fill('');
+            showTest();
+        }
+    } catch (error) {
+        console.error('Error generating test:', error);
+        showAlert('Failed to generate test. Please try again.', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Generate Test';
+    }
+}
+
+// Display the test
+function showTest() {
+    document.getElementById('testSetup').style.display = 'none';
+    document.getElementById('testArea').style.display = 'block';
+    document.getElementById('totalQuestions').textContent = testQuestions.length;
+    currentQuestionIndex = 0;
+    displayQuestion();
+}
+
+// Display current question
+function displayQuestion() {
+    const question = testQuestions[currentQuestionIndex];
+    document.getElementById('questionText').textContent = `${currentQuestionIndex + 1}. ${question.question}`;
+    document.getElementById('answerInput').value = userAnswers[currentQuestionIndex] || '';
+    document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+    
+    // Update progress bar
+    const progress = ((currentQuestionIndex + 1) / testQuestions.length) * 100;
+    document.getElementById('progressFill').style.width = progress + '%';
+    
+    // Update navigation buttons
+    document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+    document.getElementById('nextBtn').style.display = currentQuestionIndex === testQuestions.length - 1 ? 'none' : 'block';
+    document.getElementById('submitTestBtn').style.display = currentQuestionIndex === testQuestions.length - 1 ? 'block' : 'none';
+}
+
+// Navigation functions
+function nextQuestion() {
+    userAnswers[currentQuestionIndex] = document.getElementById('answerInput').value;
+    if (currentQuestionIndex < testQuestions.length - 1) {
+        currentQuestionIndex++;
+        displayQuestion();
+    }
+}
+
+function previousQuestion() {
+    userAnswers[currentQuestionIndex] = document.getElementById('answerInput').value;
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        displayQuestion();
+    }
+}
+
+// Submit and grade test
+async function submitTest() {
+    userAnswers[currentQuestionIndex] = document.getElementById('answerInput').value;
+    
+    // Check if all questions answered
+    const unanswered = userAnswers.filter(a => !a.trim()).length;
+    if (unanswered > 0) {
+        if (!confirm(`You have ${unanswered} unanswered questions. Submit anyway?`)) {
+            return;
+        }
+    }
+    
+    // Grade the test
+    const results = await gradeTest();
+    showTestResults(results);
+}
+
+// Grade test using Claude API
+async function gradeTest() {
+    try {
+        const response = await fetch('/api/test-generator.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'gradeTest',
+                questions: testQuestions,
+                answers: userAnswers
+            })
+        });
+        
+        const data = await response.json();
+        return data.results;
+    } catch (error) {
+        console.error('Error grading test:', error);
+        return null;
+    }
+}
+
+// Show test results
+function showTestResults(results) {
+    const correct = results.filter(r => r.correct).length;
+    const total = results.length;
+    const percentage = Math.round((correct / total) * 100);
+    
+    // Calculate letter grade
+    let letterGrade = 'F';
+    if (percentage >= 90) letterGrade = 'A';
+    else if (percentage >= 80) letterGrade = 'B';
+    else if (percentage >= 70) letterGrade = 'C';
+    else if (percentage >= 60) letterGrade = 'D';
+    
+    // Update modal
+    document.querySelector('.grade-percent').textContent = percentage + '%';
+    document.getElementById('gradeLetter').textContent = letterGrade;
+    document.getElementById('correctCount').textContent = correct;
+    document.getElementById('totalCount').textContent = total;
+    
+    // Show incorrect answers
+    const incorrectDiv = document.getElementById('incorrectAnswers');
+    incorrectDiv.innerHTML = '';
+    
+    results.forEach((result, index) => {
+        if (!result.correct) {
+            const item = document.createElement('div');
+            item.className = 'incorrect-item';
+            item.innerHTML = `
+                <strong>Question ${index + 1}:</strong> ${testQuestions[index].question}<br>
+                <span style="color: var(--error);">Your answer:</span> ${userAnswers[index] || 'No answer'}<br>
+                <span style="color: var(--success);">Correct answer:</span> ${result.correctAnswer}<br>
+                <span style="color: var(--text-secondary);">Explanation:</span> ${result.explanation}
+            `;
+            incorrectDiv.appendChild(item);
+        }
+    });
+    
+    document.getElementById('testResultsModal').classList.add('show');
+}
+
+// Hide test results
+function hideTestResults() {
+    document.getElementById('testResultsModal').classList.remove('show');
+}
+
+// Retake test
+function retakeTest() {
+    hideTestResults();
+    document.getElementById('testSetup').style.display = 'block';
+    document.getElementById('testArea').style.display = 'none';
+    document.getElementById('testSourceInput').value = '';
+    document.getElementById('testImagePreview').style.display = 'none';
+    testQuestions = [];
+    userAnswers = [];
+}
+        
+        
         // Image upload handling
         function handleImageUpload(event) {
             const file = event.target.files[0];
@@ -2708,6 +2917,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
