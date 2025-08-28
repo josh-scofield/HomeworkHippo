@@ -86,39 +86,45 @@ export default async function handler(req, res) {
   };
 
   const template = templates[type] || { subject, html };
+try {
+  console.log('Attempting to send email to:', to);
+  console.log('Using template type:', type);
+  console.log('Web3Forms key:', WEB3FORMS_KEY ? 'Present' : 'Missing');
+  
+  const emailData = {
+    access_key: WEB3FORMS_KEY,
+    to: to,
+    subject: template.subject,
+    from_name: 'HomeworkHippo',
+    from_email: 'support@homeworkhippo.com',
+    html: template.html
+  };
+  
+  console.log('Email data:', JSON.stringify(emailData, null, 2));
+  
+  const response = await fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(emailData)
+  });
 
-  try {
-    // Using Web3Forms free email API (100 emails/month free)
-    // Get your access key at: https://web3forms.com/
-    const WEB3FORMS_KEY = process.env.WEB3FORMS_KEY || '784568f1-8f21-4833-b104-8434217d7c1a';
-    
-    const response = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        access_key: WEB3FORMS_KEY,
-        to: to,
-        subject: template.subject,
-        from_name: 'HomeworkHippo',
-        from_email: 'support@homeworkhippo.com',
-        html: template.html
-      })
-    });
-
-    if (response.ok) {
-      return res.status(200).json({ success: true });
-    } else {
-      // If Web3Forms fails, just log it but don't break the flow
-      console.log('Email service unavailable, continuing without email');
-      return res.status(200).json({ success: true, note: 'Email not sent' });
-    }
-
-  } catch (error) {
-    console.error('Email error:', error);
-    // Don't fail the whole process if email fails
-    return res.status(200).json({ success: true, note: 'Email not sent' });
+  console.log('Web3Forms response status:', response.status);
+  const responseText = await response.text();
+  console.log('Web3Forms response body:', responseText);
+  
+  if (response.ok) {
+    console.log('Email marked as sent successfully');
+    return res.status(200).json({ success: true });
+  } else {
+    console.error('Web3Forms rejected the request:', responseText);
+    return res.status(200).json({ success: true, note: 'Email failed' });
   }
+} catch (error) {
+  console.error('Email sending error:', error);
+  return res.status(200).json({ success: true, note: 'Email error' });
+}
+ 
 }
