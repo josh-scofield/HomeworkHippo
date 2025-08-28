@@ -65,7 +65,7 @@ module.exports = async function handler(req, res) {
         
         if (response.ok) {
           console.log('User subscription activated:', customerEmail);
-          fetch(`https://${process.env.VERCEL_URL || 'homeworkhippo.com'}/api/send-email.js`, {
+          fetch('https://homework-hippo.vercel.app/api/send-email.js', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -117,7 +117,7 @@ module.exports = async function handler(req, res) {
         });
         
         console.log('Subscription cancelled for:', customerEmail);
-        fetch(`https://${process.env.VERCEL_URL || 'homeworkhippo.com'}/api/send-email.js`, {
+        fetch('https://homework-hippo.vercel.app/api/send-email.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
