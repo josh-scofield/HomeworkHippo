@@ -96,13 +96,14 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
       body: JSON.stringify({
         access_key: WEB3FORMS_KEY,
         to: to,
         subject: template.subject,
         from_name: 'HomeworkHippo',
-        from_email: 'noreply@homeworkhippo.com',
+        from_email: 'support@homeworkhippo.com',
         html: template.html
       })
     });
