@@ -2597,7 +2597,7 @@ function showTestGeneratorButton() {
             responseContent.style.display = 'none';
             submitBtn.disabled = true;
             submitBtn.textContent = 'Processing...';
-            } catch (error) {
+             catch (error) {
                 console.error('Error:', error);
                 responseContent.innerHTML = '<div class="alert alert-error">Sorry, there was an error processing your question. Please try again.</div>';
             } finally {
@@ -3217,6 +3217,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
