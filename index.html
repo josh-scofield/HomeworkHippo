@@ -2444,43 +2444,103 @@ function retakeTest() {
             }
         }
 
-        // Submit question function
-        async function submitQuestion() {
-            const question = document.getElementById('questionInput').value.trim();
-            const imageFile = document.getElementById('imageUpload').files[0];
-
-            if (!question && !imageFile) {
-                showAlert('Please enter a question or upload an image.', 'error');
-                return;
-            }
-
-       if (!currentUser) {
-    // Check anonymous limit
-    anonymousQuestionCount = parseInt(localStorage.getItem('anonymous_questions') || '0');
+   // Submit question function
+async function submitQuestion() {
+    const question = document.getElementById('questionInput').value.trim();
+    const imageFile = document.getElementById('imageUpload').files[0];
     
-    if (anonymousQuestionCount >= 10) {
-        showAlert('You\'ve used your 10 free questions! Please create an account to continue.', 'error');
-        showModal('signup');
+    if (!question && !imageFile) {
+        showAlert('Please enter a question or upload an image.', 'error');
         return;
     }
     
-    // Increment anonymous counter
-    anonymousQuestionCount++;
-    localStorage.setItem('anonymous_questions', anonymousQuestionCount.toString());
-    showAnonymousCounter();
-}
+    if (!currentUser) {
+        // Check anonymous limit
+        anonymousQuestionCount = parseInt(localStorage.getItem('anonymous_questions') || '0');
         
-     // Refresh user data to check latest subscription status (only for logged-in users)
-if (currentUser) {
+        if (anonymousQuestionCount >= 10) {
+            showAlert('You\'ve used your 10 free questions! Please create an account to continue.', 'error');
+            showModal('signup');
+            return;
+        }
+        
+        // Increment anonymous counter
+        anonymousQuestionCount++;
+        localStorage.setItem('anonymous_questions', anonymousQuestionCount.toString());
+        showAnonymousCounter();
+    }
+    
+    // Refresh user data to check latest subscription status (only for logged-in users)
+    if (currentUser) {
+        try {
+            const userResponse = await fetch(`/api/users.js?email=${currentUser.email}`);
+            const userData = await userResponse.json();
+            if (userData.success) {
+                currentUser = userData.user;
+                localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
+            }
+        } catch (error) {
+            console.error('Error refreshing user data:', error);
+        }
+    }
+    
+    // ADD THIS: Check subscription limits for logged-in users
+    if (currentUser && !currentUser.subscribed) {
+        // Trial users get 3 questions
+        if (questionCount >= 3) {
+            showTrialExpiredModal();
+            return;
+        }
+    }
+    
+    if (currentUser && currentUser.subscribed && currentUser.plan_type === 'basic') {
+        // Basic plan users get 100 questions per month
+        if (currentUser.questions_this_month >= 100) {
+            showAlert('You\'ve reached your 100 question monthly limit. Upgrade to Unlimited!', 'error');
+            showSubscriptionModal();
+            return;
+        }
+    }
+    
+    // ADD THIS: The actual API call section
+    const responseSection = document.getElementById('responseSection');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const responseContent = document.getElementById('responseContent');
+    const submitBtn = document.getElementById('submitBtn');
+
+    responseSection.classList.add('show');
+    loadingIndicator.style.display = 'block';
+    responseContent.style.display = 'none';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Processing...';
+
     try {
-        const userResponse = await fetch(`/api/users.js?email=${currentUser.email}`);
-        const userData = await userResponse.json();
-        if (userData.success) {
-            currentUser = userData.user;
-            localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
+        const response = await callSecureAPI(question, imageFile);
+        responseContent.innerHTML = formatResponse(response);
+        
+        // Only update database for logged-in users
+        if (currentUser) {
+            await fetch('/api/users.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'incrementQuestions',
+                    email: currentUser.email
+                })
+            });
+            
+            questionCount++;
+            localStorage.setItem('question_count', questionCount.toString());
+            updateQuestionCount();
         }
     } catch (error) {
-        console.error('Error refreshing user data:', error);
+        console.error('Error:', error);
+        responseContent.innerHTML = '<div class="alert alert-error">Sorry, there was an error processing your question. Please try again.</div>';
+    } finally {
+        loadingIndicator.style.display = 'none';
+        responseContent.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Get solution';
     }
 }
         
@@ -3195,6 +3255,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
