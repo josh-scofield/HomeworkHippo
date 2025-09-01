@@ -2585,24 +2585,23 @@ function showTestGeneratorButton() {
     }
 }
             
-            // Check question limits
-if (currentUser && currentUser.subscribed && currentUser.plan_type === 'basic') {
-    showTrialExpiredModal();
-    return;
-}
-
-if (currentUser && currentUser.subscribed && currentUser.plan_type === 'basic' && currentUser.questions_this_month >= 100) {
-    showAlert('You\'ve reached your 100 question monthly limit. Upgrade to Unlimited!', 'error');
-    startSubscription();
-    return;
-}
-    
-    if (currentUser && currentUser.subscribed && currentUser.plan_type === 'basic' && 
-        currentUser.questions_this_month >= 100) {
-        showAlert('You\'ve reached your 100 question monthly limit. Upgrade to Unlimited for more!', 'error');
-        showSubscriptionModal();
+// Check subscription limits for logged-in users
+if (currentUser && !currentUser.subscribed) {
+    // NON-subscribed users (trial users) get 3 questions
+    if (questionCount >= 3) {
+        showTrialExpiredModal();
         return;
     }
+}
+
+if (currentUser && currentUser.subscribed && currentUser.plan_type === 'basic') {
+    // Basic plan subscribers get 100 questions per month
+    if (currentUser.questions_this_month >= 100) {
+        showAlert('You\'ve reached your 100 question monthly limit. Upgrade to Unlimited!', 'error');
+        showSubscriptionModal();  // or startSubscription()
+        return;
+    }
+}
 
             const responseSection = document.getElementById('responseSection');
             const loadingIndicator = document.getElementById('loadingIndicator');
@@ -3255,6 +3254,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
