@@ -2587,26 +2587,6 @@ function showTestGeneratorButton() {
             
 
 
-            const responseSection = document.getElementById('responseSection');
-            const loadingIndicator = document.getElementById('loadingIndicator');
-            const responseContent = document.getElementById('responseContent');
-            const submitBtn = document.getElementById('submitBtn');
-
-            responseSection.classList.add('show');
-            loadingIndicator.style.display = 'block';
-            responseContent.style.display = 'none';
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Processing...';
-             catch (error) {
-                console.error('Error:', error);
-                responseContent.innerHTML = '<div class="alert alert-error">Sorry, there was an error processing your question. Please try again.</div>';
-            } finally {
-                loadingIndicator.style.display = 'none';
-                responseContent.style.display = 'block';
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Get solution';
-            }
-        }
 
 // Call our secure backend API
 async function callSecureAPI(question, imageFile) {
@@ -3217,6 +3197,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
