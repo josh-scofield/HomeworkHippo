@@ -2531,7 +2531,7 @@ if (currentUser && currentUser.subscribed && currentUser.plan_type === 'basic') 
     return;
 }
 
-if (currentUser.subscribed && currentUser.plan_type === 'basic' && currentUser.questions_this_month >= 100) {
+if (currentUser && currentUser.subscribed && currentUser.plan_type === 'basic' && currentUser.questions_this_month >= 100) {
     showAlert('You\'ve reached your 100 question monthly limit. Upgrade to Unlimited!', 'error');
     startSubscription();
     return;
@@ -3190,6 +3190,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
