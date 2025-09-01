@@ -3034,7 +3034,12 @@ if (counter) counter.remove();
     updateQuestionCount();
     updateTrialDays();
     
-    // Hide marketing sections for logged-in users
+     const counter = document.getElementById('anonymousCounter');
+    if (counter) {
+        counter.style.display = 'none';
+    }
+          
+          // Hide marketing sections for logged-in users
     document.querySelector('.hero').style.display = 'none';
     document.getElementById('features').style.display = 'none';
     document.getElementById('pricing').style.display = 'none';
@@ -3190,6 +3195,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
