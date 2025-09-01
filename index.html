@@ -2598,9 +2598,7 @@ function showTestGeneratorButton() {
             submitBtn.disabled = true;
             submitBtn.textContent = 'Processing...';
 
-            try {
-                const response = await callSecureAPI(question, imageFile);
-                responseContent.innerHTML = formatResponse(response);
+           
                 
       // Only update database for logged-in users
 if (currentUser) {
@@ -3238,6 +3236,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
