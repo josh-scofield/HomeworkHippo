@@ -2600,21 +2600,7 @@ function showTestGeneratorButton() {
 
            
                 
-      // Only update database for logged-in users
-if (currentUser) {
-    await fetch('/api/users.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            action: 'incrementQuestions',
-            email: currentUser.email
-        })
-    });
-    
-    questionCount++;
-    localStorage.setItem('question_count', questionCount.toString());
-    updateQuestionCount();
-}
+
 
             } catch (error) {
                 console.error('Error:', error);
@@ -3236,6 +3222,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
