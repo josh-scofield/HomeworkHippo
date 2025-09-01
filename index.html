@@ -310,6 +310,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        @keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
 
         .response-content {
             line-height: 1.7;
@@ -969,7 +977,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <!-- Hero Section -->
         <section class="hero">
             <h1>AI-powered science homework help</h1>
-            <p>Get step-by-step solutions and detailed explanations for your chemistry, physics, and biology questions using advanced AI.</p>
+            <p>Get step-by-step solutions and detailed explanations for your math, chemistry, physics, and biology questions using advanced AI.</p>
             <div style="text-align: center; margin: 25px 0 35px 0; animation: slideUp 0.8s ease-out;">
     <div style="display: inline-flex; align-items: center; gap: 12px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.05)); padding: 12px 24px; border-radius: 100px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); animation: pulse 4s ease-in-out infinite;">
         <span style="color: #fbbf24; font-size: 18px; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.5)); animation: sparkle 2s ease-in-out infinite;">★★★★★</span>
@@ -2188,6 +2196,7 @@ async function startCheckout(planType, billingPeriod) {
         // Global state
         let currentUser = null;
         let questionCount = 0;
+        let anonymousQuestionCount = 0;
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
@@ -2195,6 +2204,11 @@ async function startCheckout(planType, billingPeriod) {
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
                 showUserDashboard();
+            }
+
+               anonymousQuestionCount = parseInt(localStorage.getItem('anonymous_questions') || '0');
+            if (!currentUser && anonymousQuestionCount > 0) {
+            showAnonymousCounter();
             }
 
             questionCount = parseInt(localStorage.getItem('question_count') || '0');
@@ -2440,11 +2454,21 @@ function retakeTest() {
                 return;
             }
 
-        if (!currentUser) {
-            showAlert('Please sign in to ask questions.', 'error');
-            showModal('login');
-            return;
-        }
+       if (!currentUser) {
+    // Check anonymous limit
+    anonymousQuestionCount = parseInt(localStorage.getItem('anonymous_questions') || '0');
+    
+    if (anonymousQuestionCount >= 10) {
+        showAlert('You\'ve used your 10 free questions! Please create an account to continue.', 'error');
+        showModal('signup');
+        return;
+    }
+    
+    // Increment anonymous counter
+    anonymousQuestionCount++;
+    localStorage.setItem('anonymous_questions', anonymousQuestionCount.toString());
+    showAnonymousCounter();
+}
         
         // Refresh user data to check latest subscription status
         try {
@@ -2626,6 +2650,49 @@ async function callSecureAPI(question, imageFile) {
 }
 
 
+      function showAnonymousCounter() {
+    if (currentUser) return; // Don't show for logged-in users
+    
+    let counter = document.getElementById('anonymousCounter');
+    if (!counter) {
+        counter = document.createElement('div');
+        counter.id = 'anonymousCounter';
+        counter.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent-orange);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 100;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        `;
+        document.body.appendChild(counter);
+    }
+    
+    const remaining = 10 - anonymousQuestionCount;
+    counter.textContent = remaining + ' free questions remaining';
+    
+    // Change color as they use up questions
+    if (remaining <= 3) {
+        counter.style.background = '#ef4444'; // Red
+        counter.style.animation = 'pulse 2s infinite';
+    } else if (remaining <= 5) {
+        counter.style.background = '#f59e0b'; // Orange
+    }
+    
+    // Hide for logged-in users
+    if (currentUser) {
+        counter.style.display = 'none';
+    }
+}
+        
+        
+        
         // Show alert messages
         function showAlert(message, type) {
             const alertDiv = document.createElement('div');
@@ -2896,6 +2963,11 @@ async function callSecureAPI(question, imageFile) {
             localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
             hideModal();
             showUserDashboard();
+           
+            // Clear anonymous questions after signup
+localStorage.removeItem('anonymous_questions');
+const counter = document.getElementById('anonymousCounter');
+if (counter) counter.remove();
             
             showAlert('Welcome! Check your email to verify your account. Your 7-day trial has started!', 'success');
             
@@ -3113,6 +3185,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
