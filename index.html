@@ -2470,17 +2470,19 @@ function retakeTest() {
     showAnonymousCounter();
 }
         
-        // Refresh user data to check latest subscription status
-        try {
-            const userResponse = await fetch(`/api/users.js?email=${currentUser.email}`);
-            const userData = await userResponse.json();
-            if (userData.success) {
-                currentUser = userData.user;
-                localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
-            }
-        } catch (error) {
-            console.error('Error refreshing user data:', error);
+     // Refresh user data to check latest subscription status (only for logged-in users)
+if (currentUser) {
+    try {
+        const userResponse = await fetch(`/api/users.js?email=${currentUser.email}`);
+        const userData = await userResponse.json();
+        if (userData.success) {
+            currentUser = userData.user;
+            localStorage.setItem('homeworkhippo_user', JSON.stringify(currentUser));
         }
+    } catch (error) {
+        console.error('Error refreshing user data:', error);
+    }
+}
         
       function showTestGenerator() {
     // Hide other sections
@@ -2524,7 +2526,7 @@ function showTestGeneratorButton() {
 }
             
             // Check question limits
-if (!currentUser.subscribed && questionCount >= 3) {
+if (currentUser && currentUser.subscribed && currentUser.plan_type === 'basic' {
     showTrialExpiredModal();
     return;
 }
@@ -2557,7 +2559,9 @@ if (currentUser.subscribed && currentUser.plan_type === 'basic' && currentUser.q
                 const response = await callSecureAPI(question, imageFile);
                 responseContent.innerHTML = formatResponse(response);
                 
-                 await fetch('/api/users.js', {
+      // Only update database for logged-in users
+if (currentUser) {
+    await fetch('/api/users.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2565,10 +2569,11 @@ if (currentUser.subscribed && currentUser.plan_type === 'basic' && currentUser.q
             email: currentUser.email
         })
     });
-                
-                questionCount++;
-                localStorage.setItem('question_count', questionCount.toString());
-                updateQuestionCount();
+    
+    questionCount++;
+    localStorage.setItem('question_count', questionCount.toString());
+    updateQuestionCount();
+}
 
             } catch (error) {
                 console.error('Error:', error);
@@ -3185,6 +3190,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </body>
 
 </html>
+
 
 
 
